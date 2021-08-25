@@ -1,0 +1,44 @@
+{
+    "private": true,
+    "proxy": "http://localhost:8080",
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "yarn add -D prettier && yarn add -D babel-eslint && npx install-peerdeps --dev eslint-config-airbnb && yarn add -D eslint-config-prettier eslint-plugin-prettier",
+        "install-packages": "yarn add axios react-hook-form react-redux redux redux-devtools-extension redux-thunk uuid @emotion/react @emotion/styled @material-ui/core"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.4.1",
+        "@emotion/styled": "^11.3.0",
+        "@material-ui/core": "^5.0.0-beta.4",
+        "@material-ui/icons": "^5.0.0-beta.4",
+        "axios": "^0.21.1",
+        "next": "latest",
+        "next-auth": "^3.29.0",
+        "next-pwa": "^5.3.1",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-hook-form": "^7.13.0",
+        "react-redux": "^7.2.4",
+        "redux": "^4.1.1",
+        "redux-devtools-extension": "^2.13.9",
+        "redux-thunk": "^2.3.0",
+        "uuid": "^8.3.2"
+    },
+    "devDependencies": {
+        "autoprefixer": "^10.2.6",
+        "babel-eslint": "^10.1.0",
+        "eslint": "7.2.0",
+        "eslint-config-airbnb": "18.2.1",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-import": "2.22.1",
+        "eslint-plugin-jsx-a11y": "6.4.1",
+        "eslint-plugin-prettier": "^3.4.1",
+        "eslint-plugin-react": "7.21.5",
+        "eslint-plugin-react-hooks": "1.7.0",
+        "postcss": "^8.3.5",
+        "prettier": "^2.3.2",
+        "tailwindcss": "^2.2.4"
+    }
+}

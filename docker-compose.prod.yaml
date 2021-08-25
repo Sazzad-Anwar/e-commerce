@@ -1,0 +1,37 @@
+version: '3'
+services:
+    nginx:
+        ports:
+            - '80:80'
+    node-app:
+        build: .
+        image: sazzadzihan/e-commerce-app
+        depends_on:
+            - mongo
+        volumes:
+            - ./:/app
+            - /app/node_modules
+        environment:
+            - NODE_ENV=production
+            - SESSION_SECRET=${SESSION_SECRET}
+            - REDIS_URL=redis
+            - MONGODB_HOST=mongo
+        command: yarn start
+
+    mongo:
+        image: mongo
+        ports:
+            - '27017:27017'
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+            - MONGO_PORT=27017
+
+        volumes:
+            - mongoDB-production:/data/db
+
+    redis:
+        image: redis
+
+volumes:
+    mongoDB-production:

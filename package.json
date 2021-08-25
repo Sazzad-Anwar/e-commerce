@@ -1,0 +1,49 @@
+{
+    "name": "e-commerce-application",
+    "version": "1.0.3",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+        "server-install": "yarn && yarn add -D nodemon morgan concurrently && yarn add axios bcryptjs cors dotenv express express-async-handler multer mysql mongoose sequelize uuid nanoid winston jsonwebtoken colors auth-middleware-jwt",
+        "start": "node app.js",
+        "server": "nodemon app.js",
+        "client": "cd client && yarn dev",
+        "build-client": "cd client && yarn build",
+        "client-install": "cd client && yarn && yarn lint && yarn install-packages",
+        "install-all": "yarn server-install && yarn client-install",
+        "dev": "concurrently \"yarn server\" \"yarn client\"",
+        "docker-start-dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build",
+        "docker-stop-dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml down",
+        "docker-start-prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build",
+        "docker-stop-prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml down"
+    },
+    "keywords": [
+        "MERN Framework, Next.js, redux, node, express, sequelize, mySQL, mongoDB"
+    ],
+    "author": "Md Sazzad Bin Anwar",
+    "license": "ISC",
+    "dependencies": {
+        "auth-middleware-jwt": "^1.0.5",
+        "axios": "^0.21.1",
+        "bcryptjs": "^2.4.3",
+        "colors": "^1.4.0",
+        "cors": "^2.8.5",
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "express-async-handler": "^1.1.4",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^6.0.0",
+        "multer": "^1.4.3",
+        "mysql": "^2.18.1",
+        "nanoid": "^3.1.25",
+        "next-pwa": "^5.3.1",
+        "sequelize": "^6.6.5",
+        "uuid": "^8.3.2",
+        "winston": "^3.3.3"
+    },
+    "devDependencies": {
+        "concurrently": "^6.2.1",
+        "morgan": "^1.10.0",
+        "nodemon": "^2.0.12"
+    }
+}
