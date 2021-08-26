@@ -35,7 +35,7 @@ const vendorSchema = mongoose.Schema({
     },
 
     upaZila: {
-        type: Sting,
+        type: String,
         required: [true, 'Upazila is required']
     },
 
@@ -43,7 +43,7 @@ const vendorSchema = mongoose.Schema({
         type: String,
         required: [true, 'Ward is required']
     },
-    nId: {
+    NID: {
         type: String,
         required: [true, 'NId is required']
     },
@@ -58,11 +58,15 @@ const vendorSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    isActive: {
+        type: Boolean,
+        default: false,
+    }
 }, {
     timestamps: true
 });
 
-vendorSchema.method.matchPassword = async function (enteredPassword) {
+vendorSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password)
 };
 

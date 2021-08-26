@@ -37,6 +37,7 @@
         "mysql": "^2.18.1",
         "nanoid": "^3.1.25",
         "next-pwa": "^5.3.1",
+        "nodemailer": "^6.6.3",
         "sequelize": "^6.6.5",
         "uuid": "^8.3.2",
         "winston": "^3.3.3"

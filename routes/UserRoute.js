@@ -1,8 +1,16 @@
 //@Description: Authentication routes
+const { tokenValidation } = require('auth-middleware-jwt');
 const express = require('express');
 const router = express.Router();
-const { login, registration, detailsUpdate, getUserDetails, accountActivate } = require('../controllers/UserController');
-const protectedRoute = require('../middlewares/authMiddleware');
+const {
+    login,
+    registration,
+    detailsUpdate,
+    getUserDetails,
+    accountActivate,
+    passwordResetEmail,
+    passwordReset
+} = require('../controllers/UserController/userAuthController');
 
 //@Description: Login route for all users
 //Route: /api/v1/user/login
@@ -24,18 +32,27 @@ router
 //Method: PUT
 router
     .route('/details/')
-    .get(protectedRoute, getUserDetails)
-    .put(protectedRoute, detailsUpdate)
+    .get(tokenValidation, getUserDetails)
+    .put(tokenValidation, detailsUpdate)
 
 
 /*
 ##### @Description: User account activate
-##### Route: /api/v1/user/:activationId
+##### Route: /api/v1/user/activate/:_id/:activationId
 ##### Method: GET
 */
 router
-    .route('/:activationId')
+    .route('/activate/:_id/:activationId')
     .get(accountActivate)
 
+/*
+##### @Description: User password reset
+##### Route: /api/v1/user/password/reset
+##### Method: POST, PUT
+*/
+router
+    .route('/password/reset')
+    .post(passwordResetEmail)
+    .put(passwordReset)
 
 module.exports = router;

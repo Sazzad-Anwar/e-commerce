@@ -33,6 +33,9 @@ const userSchema = mongoose.Schema({
     },
     activationId: {
         type: String
+    },
+    passwordResetId: {
+        type: String
     }
 }, {
     timestamps: true

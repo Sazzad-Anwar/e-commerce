@@ -13,7 +13,7 @@ const port = process.env.PORT || 8080;
 const {
     errorHandler,
     notFound
-} = require('./middlewares/middlewares');
+} = require('./middleware/errorHandler');
 
 //This will show the request path for every request only for development mode
 if (process.env.NODE_ENV !== 'production') {
@@ -34,6 +34,7 @@ connect_MongoDB('eCommerce');
 
 
 app.use('/api/v1/user', require('./routes/UserRoute'));
+app.use('/api/v1/vendor', require('./routes/VendorRoute'));
 
 // app.get('*', (req, res) => {
 //     res.sendFile(path.join(__dirname, 'build', 'index.html'));

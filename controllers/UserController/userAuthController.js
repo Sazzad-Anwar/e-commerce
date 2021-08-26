@@ -1,7 +1,8 @@
 const asyncHandler = require('express-async-handler');
-const Users = require('../models/user');
+const Users = require('../../models/user');
 const { getToken } = require('auth-middleware-jwt');
 const { v4: uuid } = require('uuid');
+const { emailSender } = require('../../libs/emailSender');
 
 
 //##### Description: Controller of Login route for all users
@@ -16,6 +17,7 @@ const login = asyncHandler(async (req, res) => {
     if (userExists && (await userExists.matchPassword(password))) {
         let user = {
             _id: userExists._id,
+            type: 'user'
         }
 
         let token = await getToken(user);
@@ -39,13 +41,13 @@ const login = asyncHandler(async (req, res) => {
 
 
 /*
-##### @Description:Controller of Registration route for user
+##### @Description: Controller of Registration route for user and send an email to user for account activation
 ##### Route: /api/v1/user/registration
 ##### Method: POST
 */
 const registration = asyncHandler(async (req, res) => {
 
-    const { name, email, phone, address, password, photo, isAdmin } = req.body;
+    const { name, email, phone, address, password, photo } = req.body;
 
     let userRegistered = await Users.findOne({ $or: [{ email }, { phone }] });
 
@@ -61,7 +63,7 @@ const registration = asyncHandler(async (req, res) => {
     } else {
 
         let newUser = new Users({
-            name, email, phone, address, password, photo, isAdmin, activationId: uuid()
+            name, email, phone, address, password, photo, activationId: uuid()
         });
 
         await newUser.save();
@@ -72,7 +74,17 @@ const registration = asyncHandler(async (req, res) => {
 
         user = {
             _id: user._id,
+            type: 'user'
         }
+
+        let emailData = {
+            name: newUser.name,
+            activationId: `${process.env.APP_URL}/user/${newUser._id}/${newUser.activationId}`,
+            email: newUser.email,
+            type: 'Account activation'
+        }
+
+        emailSender(emailData);
 
         res.json({
             code: 200,
@@ -90,7 +102,7 @@ const registration = asyncHandler(async (req, res) => {
 */
 const getUserDetails = asyncHandler(async (req, res) => {
 
-    let userDetails = await Users.findById(req.user).select(' -password ');
+    let userDetails = await Users.findById(req.user._id).select(' -password ');
 
     if (userDetails) {
         res.json({
@@ -154,13 +166,13 @@ const detailsUpdate = asyncHandler(async (req, res) => {
 
 /*
 ##### @Description: User account activate
-##### Route: /api/v1/user/:activationId
+##### Route: /api/v1/user/activate/:_id/:activationId
 ##### Method: GET
 */
 const accountActivate = asyncHandler(async (req, res) => {
-    const { activationId } = req.params;
+    const { activationId, _id } = req.params;
 
-    let activationInvalid = await Users.findOne({ activationId, _id: req.params });
+    let activationInvalid = await Users.findOne({ activationId, _id });
 
     if (activationInvalid) {
 
@@ -183,15 +195,96 @@ const accountActivate = asyncHandler(async (req, res) => {
             message: 'User activation ID is invalid',
         })
     }
-
-
 });
 
+
+
+/*
+##### @Description: Send password reset link in email
+##### Route: /api/v1/user/password/reset
+##### Method: POST
+*/
+const passwordResetEmail = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    const userExists = await Users.findOne({ email });
+
+    let resetId = uuid();
+
+    if (userExists) {
+
+        userExists.passwordResetId = resetId;
+
+        await userExists.save();
+
+        let emailData = {
+            name: userExists.name,
+            resetLink: `${process.env.APP_URL}/user/password/reset/${userExists._id}/${resetId}`,
+            email: userExists.email,
+            type: 'Password reset'
+        }
+
+        // emailSender(emailData);
+
+        res.json({
+            code: 200,
+            isSuccess: true,
+            status: 'success',
+            message: 'Password reset link has been sent to your email, please check. The link will be valid for 5 minutes only!',
+            data: {
+                passwordResetLink: `${process.env.APP_URL}/user/password/reset/${userExists._id}/${resetId}`,
+                expiresIn: Date.now() + Number(process.env.PASSWORD_RESET_LINK_VALIDATION_TIME)
+            },
+        })
+
+        setTimeout(() => {
+            userExists.passwordResetId = ''
+            userExists.save()
+        }, Number(process.env.PASSWORD_RESET_LINK_VALIDATION_TIME))
+    }
+});
+
+
+
+/*
+##### @Description: User password reset
+##### Route: /api/v1/user/password/reset
+##### Method: PUT
+*/
+const passwordReset = asyncHandler(async (req, res) => {
+    const { _id, passwordResetId, password } = req.body;
+
+    let user = await Users.findOne({ _id, passwordResetId });
+
+    if (user) {
+        user.password = password;
+        user.passwordResetId = '';
+
+        await user.save()
+
+        res.json({
+            code: 200,
+            isSuccess: true,
+            status: 'success',
+            message: 'Password updated'
+        })
+    } else {
+        res.json({
+            code: 404,
+            isSuccess: false,
+            status: 'failed',
+            message: 'Invalid link'
+        })
+    }
+
+});
 
 module.exports = {
     login,
     registration,
     detailsUpdate,
     accountActivate,
-    getUserDetails
+    getUserDetails,
+    passwordResetEmail,
+    passwordReset
 }
