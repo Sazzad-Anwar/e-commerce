@@ -5,3 +5,4 @@ new.json
 docker-compose.dev.yaml
 .env
 error.log
+test.js

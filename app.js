@@ -7,7 +7,7 @@ const app = express();
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
-// const connect_MongoDB = require('./config/db/MongoDB');
+const connect_MongoDB = require('./config/db/MongoDB');
 require('colors');
 const port = process.env.PORT || 8080;
 const {
@@ -18,7 +18,7 @@ const {
 //This will show the request path for every request only for development mode
 if (process.env.NODE_ENV !== 'production') {
     const morgan = require('morgan');
-    app.use(morgan('tiny'));
+    app.use(morgan('dev'));
 }
 
 app.use(cors());
@@ -30,17 +30,17 @@ app.use(express.static(path.join(__dirname, 'build')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //@Description: To use monogdb connection
-// connect_MongoDB('project_template');
+connect_MongoDB('eCommerce');
 
 
-app.use('/api/v1/', require('./routes/AppRoute'));
-
-app.use(errorHandler);
+app.use('/api/v1/user', require('./routes/UserRoute'));
 
 // app.get('*', (req, res) => {
 //     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 //     console.log('Build file connected');
 // });
 app.use(notFound);
+app.use(errorHandler);
+
 
 app.listen(port, () => console.log(`App is listening on port ${port}!`.cyan.underline));

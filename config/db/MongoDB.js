@@ -6,17 +6,13 @@ const connectDB = async (databaseName) => {
             const conn = await mongoose.connect(`mongodb://localhost:27017/${databaseName}`, {
                 useUnifiedTopology: true,
                 useNewUrlParser: true,
-                useCreateIndex: true,
-                useFindAndModify: false
             });
             console.log(`MongoDB Connected: ${conn.connection.host}`.green.underline);
 
         } else {
-            const conn = await mongoose.connect(process.env.MONGOURI, {
+            const conn = await mongoose.connect(`mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${process.env.MONGODB_HOST}:${process.env.MONGO_PORT}/?authSource=admin`, {
                 useUnifiedTopology: true,
                 useNewUrlParser: true,
-                useCreateIndex: true,
-                useFindAndModify: false
             });
             console.log(`MongoDB Connected: ${conn.connection.host}`.green.underline);
         }

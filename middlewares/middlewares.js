@@ -1,36 +1,56 @@
 const winston = require('winston');
 const { combine, label, timestamp, prettyPrint } = winston.format;
+const Errors = require('../models/errorLogs');
 
-
-exports.response = (isSuccess, code, message, body) => {
-    return { data: body, isSuccess: isSuccess, code: code, message: message };
-};
 
 //Description: Send the organized readable time string
 exports.localTimeString = (time) => {
     return new Date(time).toLocaleString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 };
 
+
+
 //Description: Check the input variables is empty or not
 exports.isEmpty = value => value === undefined || value === null || (typeof value === 'object' && Object.keys(value).length === 0) || (typeof value === 'string' && value.trim().length === 0) ? true : false;
 
+
+
 //Description: Handle the error and throw the error in API response instead crashing the applicaiton
-exports.errorHandler = (err, req, res, next) => {
+exports.errorHandler = async (err, req, res, next) => {
     const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+
     res.status(statusCode);
-    console.log(`${err}`.red);
+
+    console.log(`${err.stack}`.red);
+
     if (err) {
-        this.logger(err.message, err.stack, req.ip)
+
+        let newError = new Errors({
+            message: err.message,
+            IP: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+            stack: err.stack
+        })
+
+        if (process.env.NODE_ENV === 'production') {
+            await newError.save();
+        }
+
+        this.logger(err.message, err.stack, req.headers['x-forwarded-for'] || req.socket.remoteAddress)
+
         res.json({
             message: err.message,
             isSuccess: false,
             code: statusCode,
             stack: process.env.NODE_ENV === 'production' ? null : err.stack
         });
+
     } else {
         next();
     }
 };
+
+
+
 
 //Description: Show an error message on API response if the route is not defined
 exports.notFound = (req, res, next) => {
@@ -38,6 +58,8 @@ exports.notFound = (req, res, next) => {
     res.status(404);
     next(error);
 };
+
+
 
 //Descirption: pagination
 exports.pagination = (model, page, limit, model_name) => {
@@ -76,9 +98,11 @@ exports.pagination = (model, page, limit, model_name) => {
 };
 
 
+
+
 //Description: Print the error on the error.log page for production
 const logger = winston.createLogger({
-    level: 'error',
+    level: 'info',
     format: combine(
         // label(),
         timestamp(),
@@ -86,9 +110,12 @@ const logger = winston.createLogger({
     ),
     // defaultMeta: { service: 'user-service' },
     transports: [
-        new winston.transports.File({ filename: 'error.log' })
+        new winston.transports.File({ filename: 'error.log', level: 'error' }),
     ]
 });
+
+
+
 
 exports.logger = (error, stack, IP) => {
     logger
@@ -97,6 +124,13 @@ exports.logger = (error, stack, IP) => {
             message: error,
             IP,
             stack,
-            error_occured: new Date().toLocaleString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+            occurredAt: new Date().toLocaleString('en-US', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })
         });
 }
