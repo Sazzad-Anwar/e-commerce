@@ -6,16 +6,18 @@
     "scripts": {
         "server-install": "yarn && yarn add -D nodemon morgan concurrently && yarn add axios bcryptjs cors dotenv express express-async-handler multer mysql mongoose sequelize uuid nanoid winston jsonwebtoken colors auth-middleware-jwt",
         "start": "node app.js",
-        "server": "nodemon app.js",
+        "server": "nodemon -L app.js",
         "client": "cd client && yarn dev",
         "build-client": "cd client && yarn build",
         "client-install": "cd client && yarn && yarn lint && yarn install-packages",
         "install-all": "yarn server-install && yarn client-install",
         "dev": "concurrently \"yarn server\" \"yarn client\"",
-        "docker-start-dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build",
-        "docker-stop-dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml down",
-        "docker-start-prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build",
-        "docker-stop-prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml down"
+        "docker-build-start-dev": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d --build",
+        "docker-start-dev": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d",
+        "docker-stop-dev": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml down",
+        "docker-build-start-prod": "docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build",
+        "docker-start-prod": "docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d",
+        "docker-stop-prod": "docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml down"
     },
     "keywords": [
         "MERN Framework, Next.js, redux, node, express, sequelize, mySQL, mongoDB"

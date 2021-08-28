@@ -3,7 +3,7 @@ services:
     nginx:
         ports:
             - '80:80'
-    node-app:
+    e-commerce:
         build: .
         image: sazzadzihan/e-commerce-app
         depends_on:

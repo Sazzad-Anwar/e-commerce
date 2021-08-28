@@ -61,6 +61,12 @@ const vendorSchema = mongoose.Schema({
     isActive: {
         type: Boolean,
         default: false,
+    },
+    activationId: {
+        type: String
+    },
+    passwordResetId: {
+        type: String
     }
 }, {
     timestamps: true

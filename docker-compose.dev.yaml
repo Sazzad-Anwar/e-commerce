@@ -1,0 +1,48 @@
+version: '3'
+services:
+    nginx:
+        ports:
+            - '8080:80'
+    e-commerce:
+        build: .
+        depends_on:
+            - mongo
+        volumes:
+            - ./:/app
+            - /app/node_modules
+        environment:
+            - PORT=8080
+            - SECRET_KEY=710d9ea5-598b-4e44-8b5f-69c9385da824
+            - TOKEN_EXPIRES_IN=1d
+            - NODE_ENV=development
+            - MONGO_PORT=27017
+            - MONGO_HOST=mongo
+            # - REDIS_URL=redis
+            # - REDIS_PORT=6379
+            - EMAIL_HOST=smtp.gmail.com
+            - EMAIL_PORT=
+            - EMAIL_USER=sazzadzihan@gmail.com
+            - EMAIL_PASS=awxmdpguccaxkkqq
+            - EMAIL_FROM=e-commerce<sazzadzihan@gmail.com>
+            - COMPANY_NAME=e-commerce-paltform
+            - APP_URL=http://localhost:8080
+            - PASSWORD_RESET_LINK_VALIDATION_TIME=300000
+        command: yarn server
+
+    mongo:
+        image: mongo
+        ports:
+            - '27017:27017'
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=sazzad
+            - MONGO_INITDB_ROOT_PASSWORD=testing
+            - MONGO_PORT=27017
+
+        volumes:
+            - mongo-db-development:/data/db
+
+    # redis:
+    #     image: redis
+
+volumes:
+    mongo-db-development:

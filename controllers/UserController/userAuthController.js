@@ -48,6 +48,7 @@ const login = asyncHandler(async (req, res) => {
 const registration = asyncHandler(async (req, res) => {
 
     const { name, email, phone, address, password, photo } = req.body;
+    let activationId = uuid()
 
     let userRegistered = await Users.findOne({ $or: [{ email }, { phone }] });
 
@@ -63,7 +64,7 @@ const registration = asyncHandler(async (req, res) => {
     } else {
 
         let newUser = new Users({
-            name, email, phone, address, password, photo, activationId: uuid()
+            name, email, phone, address, password, photo, activationId
         });
 
         await newUser.save();
