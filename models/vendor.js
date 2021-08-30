@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const vendorSchema = mongoose.Schema({
+const vendorSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Name is required'],

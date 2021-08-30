@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
-const msgSchema = mongoose.Schema({
+const msgSchema = new mongoose.Schema({
     user: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User'
     },
     vendor: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Vendor'
     },

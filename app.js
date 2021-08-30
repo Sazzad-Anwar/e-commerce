@@ -35,6 +35,8 @@ connect_MongoDB('eCommerce');
 
 app.use('/api/v1/user', require('./routes/UserRoute'));
 app.use('/api/v1/vendor', require('./routes/VendorRoute'));
+app.use('/api/v1/category', require('./routes/Category'));
+app.use('/api/v1/products', require('./routes/ProductRoute'));
 
 // app.get('*', (req, res) => {
 //     res.sendFile(path.join(__dirname, 'build', 'index.html'));

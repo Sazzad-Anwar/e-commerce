@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-const productSchema = mongoose.Schema({
+const productSchema = new mongoose.Schema({
     vendor: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Vendor'
     },
@@ -10,13 +10,9 @@ const productSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    hotSell: {
-        status: { type: Boolean, default: false },
-        discount: { type: Number, default: 0.00 },
-        banners: [
-            { src: { type: String } }
-        ]
-    },
+    image: [
+        { src: { type: String, required: true } }
+    ],
     campaign: {
         status: { type: Boolean, default: false },
         campaignName: { type: String },
@@ -25,17 +21,22 @@ const productSchema = mongoose.Schema({
             { src: { type: String } }
         ]
     },
-    variant: [{ type: mongoose.SchemaTypes.ObjectId, required: true }],
-    sku: {
-        type: String,
-        required: true,
-    },
+    variant: [{
+        color: { type: String, required: true },
+        size: { type: String, required: true },
+        stock: { type: Number, required: true, default: 0 },
+        price: { type: Number, required: true, default: 0 },
+        sku: {
+            type: String,
+            required: true,
+        },
+    }],
     brand: {
         type: String,
         required: true
     },
     category: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
     description: {
@@ -52,7 +53,7 @@ const productSchema = mongoose.Schema({
         default: 0
     },
     reviews: [{
-        type: mongoose.SchemaTypes.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Reviews'
     }]
 }, {

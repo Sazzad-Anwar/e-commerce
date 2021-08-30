@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const errorSchema = mongoose.Schema({
+const errorSchema = new mongoose.Schema({
     message: {
         type: String,
         required: true,

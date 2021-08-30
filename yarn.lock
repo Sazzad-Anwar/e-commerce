@@ -1179,11 +1179,12 @@ at-least-node@^1.0.0:
   resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
 
-auth-middleware-jwt@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/auth-middleware-jwt/-/auth-middleware-jwt-1.0.5.tgz#87f27377aee3f3a705fea0c0d05104843975b2c0"
-  integrity sha512-qRifqoweCpqsjzIBAYY9na42mBXGMK7/NSL1bZb8/dcBD10fscjKHvsHwKESsc+x2cJ2w4tK9+TmNrgY9ZEbBg==
+auth-middleware-jwt@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/auth-middleware-jwt/-/auth-middleware-jwt-1.0.6.tgz#86acff1c235d7309794d3d3f12de05c9c53e5e27"
+  integrity sha512-Ei9lkkmtAgVoigCpkV9kLZ0trtMAlvoNfJk/RSAMauL0cpULitSh3vAfZDq+45494y4RBEjVcY+y4zhpAKnT/w==
   dependencies:
+    express-async-handler "^1.1.4"
     jsonwebtoken "^8.5.1"
 
 axios@^0.21.1:

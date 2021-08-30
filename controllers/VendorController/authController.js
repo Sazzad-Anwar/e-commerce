@@ -131,7 +131,7 @@ const getVendorDetails = asyncHandler(async (req, res) => {
             status: 'success',
             isSuccess: true,
             data: {
-                user: vendorDetails,
+                vendor: vendorDetails,
             }
         })
     } else {
@@ -139,7 +139,7 @@ const getVendorDetails = asyncHandler(async (req, res) => {
             code: 404,
             status: 'failed',
             isSuccess: false,
-            message: 'User is not found'
+            message: 'vendor is not found'
         })
     }
 
@@ -204,8 +204,8 @@ const vendorDetailsUpdate = asyncHandler(async (req, res) => {
 
 
 /*
-##### @Description: User account activate
-##### Route: /api/v1/user/activate/:_id/:activationId
+##### @Description: vendor account activate
+##### Route: /api/v1/vendor/activate/:_id/:activationId
 ##### Method: GET
 */
 const accountActivate = asyncHandler(async (req, res) => {
@@ -240,7 +240,7 @@ const accountActivate = asyncHandler(async (req, res) => {
 
 /*
 ##### @Description: Send password reset link in email
-##### Route: /api/v1/user/password/reset
+##### Route: /api/v1/vendor/password/reset
 ##### Method: POST
 */
 const passwordResetEmail = asyncHandler(async (req, res) => {
@@ -258,7 +258,7 @@ const passwordResetEmail = asyncHandler(async (req, res) => {
 
         let emailData = {
             name: vendorExists.name,
-            resetLink: `${process.env.APP_URL}/user/password/reset/${vendorExists._id}/${resetId}`,
+            resetLink: `${process.env.APP_URL}/vendor/password/reset/${vendorExists._id}/${resetId}`,
             email: vendorExists.email,
             type: 'Password reset'
         }
@@ -271,7 +271,7 @@ const passwordResetEmail = asyncHandler(async (req, res) => {
             status: 'success',
             message: 'Password reset link has been sent to your email, please check. The link will be valid for 5 minutes only!',
             data: {
-                passwordResetLink: `${process.env.APP_URL}/user/password/reset/${vendorExists._id}/${resetId}`,
+                passwordResetLink: `${process.env.APP_URL}/vendor/password/reset/${vendorExists._id}/${resetId}`,
                 expiresIn: Date.now() + Number(process.env.PASSWORD_RESET_LINK_VALIDATION_TIME)
             },
         })
@@ -286,8 +286,8 @@ const passwordResetEmail = asyncHandler(async (req, res) => {
 
 
 /*
-##### @Description: User password reset
-##### Route: /api/v1/user/password/reset
+##### @Description: vendor password reset
+##### Route: /api/v1/vendor/password/reset
 ##### Method: PUT
 */
 const passwordReset = asyncHandler(async (req, res) => {
