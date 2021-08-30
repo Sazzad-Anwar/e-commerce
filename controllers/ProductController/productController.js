@@ -201,6 +201,7 @@ const updateReview = asyncHandler(async (req, res) => {
                 status: 'success',
                 isSuccess: true,
                 reviews,
+                message
             });
         } else {
             res.status(404).json({
