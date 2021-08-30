@@ -180,7 +180,7 @@ const updateReview = asyncHandler(async (req, res) => {
 
             let updatedReview = await reviews.save();
 
-            let { isSuccess, message } = removeFile(reviews.photo);
+            let reviewImageDelete = removeFile(reviews.photo);
 
             let productDetails = await Products.findById(product).populate('reviews');
 
@@ -201,7 +201,7 @@ const updateReview = asyncHandler(async (req, res) => {
                 status: 'success',
                 isSuccess: true,
                 reviews,
-                message
+                reviewImageDelete
             });
         } else {
             res.status(404).json({
