@@ -30,12 +30,8 @@ const registration = asyncHandler(async (req, res) => {
     let activationId = uuid();
 
     if (vendorExists) {
-        res.status(409).json({
-            code: 409,
-            status: 'failed',
-            isSuccess: false,
-            message: 'Vendor is already registered'
-        })
+        res.status(409);
+        throw new Error('Already Registered')
     } else {
         let newVendor = new Vendor({
             name,
@@ -62,6 +58,8 @@ const registration = asyncHandler(async (req, res) => {
             type: 'vendor'
         }
 
+        let token = await getToken(vendor);
+
         let emailData = {
             name: newVendor.name,
             activationId: `${process.env.APP_URL}/vendor/${newVendor._id}/${newVendor.activationId}`,
@@ -69,13 +67,20 @@ const registration = asyncHandler(async (req, res) => {
             type: 'Account activation'
         }
 
-        // emailSender(emailData);
+        process.env.NODE_ENV === 'production' ? emailSender(emailData) : null
+
+        res.cookie("token", `Bearer ${token}`, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production' ? true : false
+        });
 
         res.json({
             code: 200,
             status: 'success',
             isSuccess: true,
-            token: await getToken(vendor)
+            data: {
+                token
+            }
         })
     }
 
@@ -94,24 +99,47 @@ const login = asyncHandler(async (req, res) => {
     const vendorExists = await Vendor.findOne({ email });
 
     if (vendorExists && (await vendorExists.matchPassword(password))) {
+
         let vendor = {
             _id: vendorExists._id
         }
+
+        let token = await getToken(vendor);
+
+        res.cookie("token", `Bearer ${token}`, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production' ? true : false
+        });
 
         res.json({
             code: 200,
             status: 'success',
             isSuccess: true,
-            token: await getToken(vendor)
+            data: {
+                token
+            }
         })
     } else {
-        res.status(404).json({
-            code: 404,
-            status: 'failed',
-            isSuccess: false,
-            message: 'Credentials do not match'
-        })
+        res.status(404)
+        throw new Error('Login failed !')
     }
+});
+
+
+/*
+##### @Description: Vendor logout route
+##### Route: /api/v1/vendor/logout
+##### Method: GET
+*/
+const logout = asyncHandler(async (req, res) => {
+    res.clearCookie('token');
+    res.clearCookie('_csrf');
+    res.json({
+        code: 200,
+        status: 'success',
+        isSuccess: true,
+        message: 'Logged Out'
+    });
 });
 
 
@@ -135,12 +163,8 @@ const getVendorDetails = asyncHandler(async (req, res) => {
             }
         })
     } else {
-        res.status(404).json({
-            code: 404,
-            status: 'failed',
-            isSuccess: false,
-            message: 'vendor is not found'
-        })
+        res.status(404);
+        throw new Error('No user found !')
     }
 
 });
@@ -193,12 +217,8 @@ const vendorDetailsUpdate = asyncHandler(async (req, res) => {
         })
 
     } else {
-        res.status(404).json({
-            code: 404,
-            status: 'failed',
-            isSuccess: false,
-            message: 'Vendor not found'
-        })
+        res.status(404);
+        throw new Error('No user found !')
     }
 })
 
@@ -227,12 +247,8 @@ const accountActivate = asyncHandler(async (req, res) => {
             message: 'Vendor activated',
         })
     } else {
-        res.json({
-            code: 404,
-            status: 'failed',
-            isSuccess: false,
-            message: 'Vendor activation ID is invalid',
-        })
+        res.status(404);
+        throw new Error('Invalid user activation ID !')
     }
 });
 
@@ -263,7 +279,7 @@ const passwordResetEmail = asyncHandler(async (req, res) => {
             type: 'Password reset'
         }
 
-        // emailSender(emailData);
+        process.env.NODE_ENV === 'production' ? emailSender(emailData) : null
 
         res.json({
             code: 200,
@@ -308,12 +324,8 @@ const passwordReset = asyncHandler(async (req, res) => {
             message: 'Password updated'
         })
     } else {
-        res.json({
-            code: 404,
-            isSuccess: false,
-            status: 'failed',
-            message: 'Invalid link'
-        })
+        res.status(404);
+        throw new Error('Invalid link !')
     }
 
 });
@@ -325,5 +337,6 @@ module.exports = {
     vendorDetailsUpdate,
     passwordReset,
     accountActivate,
-    passwordResetEmail
+    passwordResetEmail,
+    logout
 }

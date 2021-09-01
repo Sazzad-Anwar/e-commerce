@@ -1,7 +1,16 @@
 //@Description: Authentication routes
 const { tokenValidation } = require('auth-middleware-jwt');
 const express = require('express');
-const { addProduct, getProducts, addReview, getReview, updateReview } = require('../controllers/ProductController/productController');
+const {
+    addProduct,
+    getProducts,
+    addReview,
+    getReview,
+    updateReview,
+    getProduct,
+    updateProduct,
+    deleteProduct
+} = require('../controllers/ProductController/productController');
 const router = express.Router();
 
 /*
@@ -14,6 +23,20 @@ router
     .route('/')
     .get(getProducts)
     .post(tokenValidation, addProduct)
+
+
+
+/*
+##### @Description:Get or Update a specific product
+##### Route: /api/v1/products/:id
+##### Method: GET, PUT
+##### Access: Vendor, Users
+*/
+router
+    .route('/:id')
+    .get(getProduct)
+    .put(tokenValidation, updateProduct)
+    .delete(tokenValidation, deleteProduct)
 
 
 /*

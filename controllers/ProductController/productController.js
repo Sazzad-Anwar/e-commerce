@@ -71,16 +71,33 @@ const getProducts = asyncHandler(async (req, res) => {
         }
     })
 
-    res.json({
-        code: 200,
-        status: 'success',
-        isSuccess: true,
-        data: {
-            products
-        }
-    })
+    if (products.length) {
+        res.json({
+            code: 200,
+            status: 'success',
+            isSuccess: true,
+            data: {
+                products
+            }
+        })
+    } else {
+        res.status(404).json({
+            code: 404,
+            status: 'failed',
+            isSuccess: false,
+            message: 'Products list is empty'
+        })
+    }
+
 });
 
+
+
+/*
+##### @Description: Get Products By vendor
+##### Route: /api/v1/products
+##### Method: GET
+*/
 
 
 /*
@@ -222,10 +239,137 @@ const updateReview = asyncHandler(async (req, res) => {
     }
 });
 
+
+
+/*
+##### @Description:Get a specific product
+##### Route: /api/v1/products/:id
+##### Method: GET
+##### Access: Vendor, Users
+*/
+const getProduct = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    let product = await Products.findById(id).populate({
+        path: "reviews",
+        populate: {
+            path: 'user',
+            select: "name photo"
+        }
+    });
+
+    if (product) {
+        res.json({
+            code: 200,
+            status: 'success',
+            isSuccess: true,
+            data: {
+                product
+            }
+        })
+    } else {
+        res.status(404).json({
+            code: 404,
+            status: 'failed',
+            isSuccess: false,
+            message: 'Product not found',
+        })
+    }
+
+});
+
+
+
+
+/*
+##### @Description: Update a specific product
+##### Route: /api/v1/products/:id
+##### Method: PUT
+##### Access: Vendor
+*/
+const updateProduct = asyncHandler(async (req, res) => {
+    const {
+        name,
+        campaign,
+        variant,
+        image,
+        brand,
+        category,
+        description,
+        specification,
+    } = req.body
+
+    const { id } = req.params;
+
+    let product = await Products.findOne({ vendor: req.user._id, _id: id })
+
+    if (product) {
+        product.name = name ?? product.name;
+        product.campaign = campaign ?? product.campaign;
+        product.variant = variant ?? product.variant;
+        product.image = image ?? product.image;
+        product.brand = brand ?? product.brand;
+        product.category = category ?? product.category;
+        product.description = description ?? product.description;
+        product.specification = specification ?? product.specification;
+
+        let productUpdated = await product.save();
+
+        res.json({
+            code: 200,
+            status: 'success',
+            isSuccess: true,
+            data: {
+                product: productUpdated
+            }
+        })
+    } else {
+        res.status(404).json({
+            code: 404,
+            status: 'failed',
+            isSuccess: false,
+            message: 'Product is not found'
+        })
+    }
+
+});
+
+
+/*
+##### @Description: Delete a specific product
+##### Route: /api/v1/products/:id
+##### Method: DELETE
+##### Access: Vendor
+*/
+const deleteProduct = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const deleteProduct = await Products.findOneAndDelete({ _id: id, vendor: req.user._id });
+
+    if (deleteProduct) {
+        res.json({
+            code: 200,
+            status: 'success',
+            isSuccess: true,
+            message: 'Product deleted successfully'
+        });
+    } else {
+        res.status(404).json({
+            code: 404,
+            status: 'failed',
+            isSuccess: false,
+            message: 'Product not found'
+        })
+    }
+
+});
+
 module.exports = {
     addProduct,
     getProducts,
     addReview,
     getReview,
-    updateReview
+    updateReview,
+    getProduct,
+    updateProduct,
+    deleteProduct
 }

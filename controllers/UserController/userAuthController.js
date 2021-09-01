@@ -3,6 +3,8 @@ const Users = require('../../models/user');
 const { getToken } = require('auth-middleware-jwt');
 const { v4: uuid } = require('uuid');
 const { emailSender } = require('../../libs/emailSender');
+const csurf = require('csurf');
+const csrfProtection = csurf({ cookie: true });
 
 
 //##### Description: Controller of Login route for all users
@@ -10,6 +12,7 @@ const { emailSender } = require('../../libs/emailSender');
 //##### Method: POST
 
 const login = asyncHandler(async (req, res) => {
+
     const { email, password } = req.body;
 
     let userExists = await Users.findOne({ email });
@@ -22,21 +25,42 @@ const login = asyncHandler(async (req, res) => {
 
         let token = await getToken(user);
 
+        res.cookie("token", `Bearer ${token}`, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production' ? true : false
+        });
+
         res.json({
             code: 200,
             status: 'success',
             isSuccess: true,
-            token
+            data: {
+                token,
+                // csrfToken: req.csrfToken()
+            }
         })
 
     } else {
-        res.status(404).json({
-            code: 404,
-            status: 'failed',
-            isSuccess: false,
-            message: 'Credentials do not match'
-        })
+        res.status(404)
+        throw new Error('Login failed !')
     }
+});
+
+
+/* 
+##### @Description: Logout route for all users
+##### Route: /api/v1/user/logout
+##### Method: GET
+*/
+const logout = asyncHandler(async (req, res) => {
+    res.clearCookie('token');
+    res.clearCookie('_csrf');
+    res.json({
+        code: 200,
+        status: 'success',
+        isSuccess: true,
+        message: 'Logged Out'
+    });
 });
 
 
@@ -54,12 +78,8 @@ const registration = asyncHandler(async (req, res) => {
 
     if (userRegistered) {
 
-        res.status(409).json({
-            code: 409,
-            status: 'failed',
-            isSuccess: false,
-            message: 'Already registered !'
-        })
+        res.status(409);
+        throw new Error('Already Registered')
 
     } else {
 
@@ -75,7 +95,7 @@ const registration = asyncHandler(async (req, res) => {
 
         user = {
             _id: user._id,
-            type: 'user'
+            type: 'user',
         }
 
         let emailData = {
@@ -85,16 +105,27 @@ const registration = asyncHandler(async (req, res) => {
             type: 'Account activation'
         }
 
-        emailSender(emailData);
+        process.env.NODE_ENV === 'production' ? emailSender(emailData) : null
+
+        let token = await getToken(user);
+
+        res.cookie("token", `Bearer ${token}`, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production' ? true : false
+        });
 
         res.json({
             code: 200,
             status: 'success',
             isSuccess: true,
-            token: await getToken(user)
+            data: {
+                token
+            }
         })
     }
-})
+});
+
+
 
 /*
 ##### @Description: Get User Details
@@ -115,14 +146,9 @@ const getUserDetails = asyncHandler(async (req, res) => {
             }
         })
     } else {
-        res.status(404).json({
-            code: 404,
-            status: 'failed',
-            isSuccess: false,
-            message: 'User is not found'
-        })
+        res.status(404);
+        throw new Error('No user found !')
     }
-
 });
 
 
@@ -154,12 +180,8 @@ const detailsUpdate = asyncHandler(async (req, res) => {
         })
 
     } else {
-        res.status(404).json({
-            code: 404,
-            status: 'failed',
-            isSuccess: false,
-            message: 'User not found'
-        })
+        res.status(404);
+        throw new Error('No user found !')
     }
 
 });
@@ -189,12 +211,8 @@ const accountActivate = asyncHandler(async (req, res) => {
             message: 'User activated',
         })
     } else {
-        res.json({
-            code: 404,
-            status: 'failed',
-            isSuccess: false,
-            message: 'User activation ID is invalid',
-        })
+        res.status(404);
+        throw new Error('Invalid user activation ID !')
     }
 });
 
@@ -270,12 +288,8 @@ const passwordReset = asyncHandler(async (req, res) => {
             message: 'Password updated'
         })
     } else {
-        res.json({
-            code: 404,
-            isSuccess: false,
-            status: 'failed',
-            message: 'Invalid link'
-        })
+        res.status(404);
+        throw new Error('Invalid link !')
     }
 
 });
@@ -287,5 +301,6 @@ module.exports = {
     accountActivate,
     getUserDetails,
     passwordResetEmail,
-    passwordReset
+    passwordReset,
+    logout
 }

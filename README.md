@@ -12,6 +12,11 @@
 -   User details update
 -   Send password reset link in email
 -   Password reset
+-   Add product review
+-   Update product review
+-   Get products by ID
+-   Get products by search
+-   Get filtered products
 
 ### **For Vendors**
 
@@ -20,3 +25,11 @@
 -   Vendor details update
 -   Send password reset link in email
 -   Password reset
+-   Category insert
+-   Category update
+-   Category delete
+-   Product insert
+-   Product update
+-   Product delete
+-   Get user reviews
+-   Get all users

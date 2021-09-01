@@ -9,8 +9,13 @@ const {
     getUserDetails,
     accountActivate,
     passwordResetEmail,
-    passwordReset
+    passwordReset,
+    logout
 } = require('../controllers/UserController/userAuthController');
+const csurf = require('csurf');
+const csrfProtection = csurf({ cookie: true });
+
+
 
 //@Description: Login route for all users
 //Route: /api/v1/user/login
@@ -18,6 +23,14 @@ const {
 router
     .route('/login')
     .post(login)
+
+
+//@Description: Logout route for all users
+//Route: /api/v1/user/logout
+//Method: GET
+router
+    .route('/logout')
+    .get(tokenValidation, logout)
 
 
 //@Description: Registration route for user
@@ -32,8 +45,8 @@ router
 //Method: PUT
 router
     .route('/details/')
-    .get(tokenValidation, getUserDetails)
-    .put(tokenValidation, detailsUpdate)
+    .get(csrfProtection, tokenValidation, getUserDetails)
+    .put(csrfProtection, tokenValidation, detailsUpdate)
 
 
 /*

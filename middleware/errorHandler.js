@@ -26,8 +26,9 @@ exports.errorHandler = async (err, req, res, next) => {
         res.json({
             message: err.message,
             isSuccess: false,
+            status: 'failed',
             code: statusCode,
-            stack: process.env.NODE_ENV === 'production' ? null : err.stack
+            // stack: process.env.NODE_ENV === 'production' ? null : err.stack
         });
 
     } else {

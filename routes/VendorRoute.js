@@ -1,8 +1,10 @@
 //@Description: Admin routes
 const { tokenValidation } = require('auth-middleware-jwt');
 const express = require('express');
-const { login, registration, getVendorDetails, vendorDetailsUpdate, accountActivate, passwordResetEmail, passwordReset } = require('../controllers/VendorController/authController');
+const { login, registration, getVendorDetails, vendorDetailsUpdate, accountActivate, passwordResetEmail, passwordReset, logout } = require('../controllers/VendorController/authController');
 const router = express.Router();
+const csurf = require('csurf');
+const csrfProtection = csurf({ cookie: true });
 
 /*
 ##### @Description: Vendor login route
@@ -12,6 +14,15 @@ const router = express.Router();
 router
     .route('/login')
     .post(login)
+
+/*
+##### @Description: Logout route for all users
+##### Route: /api/v1/vendor/logout
+##### Method: GET
+*/
+router
+    .route('/logout')
+    .get(tokenValidation, logout)
 
 
 /*
@@ -29,9 +40,8 @@ router
 //Method: GET, PUT
 router
     .route('/details')
-    .get(tokenValidation, getVendorDetails)
-    .put(tokenValidation, vendorDetailsUpdate)
-
+    .get(csrfProtection, tokenValidation, getVendorDetails)
+    .put(csrfProtection, tokenValidation, vendorDetailsUpdate)
 
 
 /*

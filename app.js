@@ -6,6 +6,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const connect_MongoDB = require('./config/db/MongoDB');
 require('colors');
@@ -23,6 +24,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({
     extended: true
 }));
@@ -33,6 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 connect_MongoDB('eCommerce');
 
 
+app.use('/api/v1/csrf-token', require('./routes/CsrfToken'));
 app.use('/api/v1/user', require('./routes/UserRoute'));
 app.use('/api/v1/vendor', require('./routes/VendorRoute'));
 app.use('/api/v1/category', require('./routes/Category'));
