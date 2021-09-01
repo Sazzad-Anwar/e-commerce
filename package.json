@@ -25,7 +25,7 @@
     "author": "Md Sazzad Bin Anwar",
     "license": "ISC",
     "dependencies": {
-        "auth-middleware-jwt": "^1.0.7",
+        "auth-middleware-jwt": "^1.0.8",
         "axios": "^0.21.1",
         "bcryptjs": "^2.4.3",
         "colors": "^1.4.0",

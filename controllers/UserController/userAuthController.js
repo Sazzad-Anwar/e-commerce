@@ -3,8 +3,6 @@ const Users = require('../../models/user');
 const { getToken } = require('auth-middleware-jwt');
 const { v4: uuid } = require('uuid');
 const { emailSender } = require('../../libs/emailSender');
-const csurf = require('csurf');
-const csrfProtection = csurf({ cookie: true });
 
 
 //##### Description: Controller of Login route for all users
@@ -27,6 +25,9 @@ const login = asyncHandler(async (req, res) => {
 
         res.cookie("token", `Bearer ${token}`, {
             httpOnly: true,
+            sameSite: 'strict',
+            path: '/',
+            expires: new Date(Date.now() + 10 * 1000),
             secure: process.env.NODE_ENV === 'production' ? true : false
         });
 
@@ -35,8 +36,7 @@ const login = asyncHandler(async (req, res) => {
             status: 'success',
             isSuccess: true,
             data: {
-                token,
-                // csrfToken: req.csrfToken()
+                isLoggedIn: true,
             }
         })
 
@@ -54,7 +54,6 @@ const login = asyncHandler(async (req, res) => {
 */
 const logout = asyncHandler(async (req, res) => {
     res.clearCookie('token');
-    res.clearCookie('_csrf');
     res.json({
         code: 200,
         status: 'success',

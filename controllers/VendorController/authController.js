@@ -133,7 +133,6 @@ const login = asyncHandler(async (req, res) => {
 */
 const logout = asyncHandler(async (req, res) => {
     res.clearCookie('token');
-    res.clearCookie('_csrf');
     res.json({
         code: 200,
         status: 'success',

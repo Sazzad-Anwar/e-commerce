@@ -22,7 +22,7 @@ if (process.env.NODE_ENV !== 'production') {
     app.use(morgan('dev'));
 }
 
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({
@@ -35,13 +35,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 connect_MongoDB('eCommerce');
 
 
-app.use('/api/v1/csrf-token', require('./routes/CsrfToken'));
 app.use('/api/v1/user', require('./routes/UserRoute'));
 app.use('/api/v1/vendor', require('./routes/VendorRoute'));
 app.use('/api/v1/category', require('./routes/Category'));
 app.use('/api/v1/products', require('./routes/ProductRoute'));
 
 // app.get('*', (req, res) => {
+//     res.cookie('XSRF-TOKEN', req.csrfToken())
 //     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 //     console.log('Build file connected');
 // });

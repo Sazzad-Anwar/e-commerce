@@ -3,8 +3,6 @@ const { tokenValidation } = require('auth-middleware-jwt');
 const express = require('express');
 const { login, registration, getVendorDetails, vendorDetailsUpdate, accountActivate, passwordResetEmail, passwordReset, logout } = require('../controllers/VendorController/authController');
 const router = express.Router();
-const csurf = require('csurf');
-const csrfProtection = csurf({ cookie: true });
 
 /*
 ##### @Description: Vendor login route
@@ -40,8 +38,8 @@ router
 //Method: GET, PUT
 router
     .route('/details')
-    .get(csrfProtection, tokenValidation, getVendorDetails)
-    .put(csrfProtection, tokenValidation, vendorDetailsUpdate)
+    .get(tokenValidation, getVendorDetails)
+    .put(tokenValidation, vendorDetailsUpdate)
 
 
 /*

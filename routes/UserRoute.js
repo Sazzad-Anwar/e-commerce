@@ -12,9 +12,6 @@ const {
     passwordReset,
     logout
 } = require('../controllers/UserController/userAuthController');
-const csurf = require('csurf');
-const csrfProtection = csurf({ cookie: true });
-
 
 
 //@Description: Login route for all users
@@ -45,8 +42,8 @@ router
 //Method: PUT
 router
     .route('/details/')
-    .get(csrfProtection, tokenValidation, getUserDetails)
-    .put(csrfProtection, tokenValidation, detailsUpdate)
+    .get(tokenValidation, getUserDetails)
+    .put(tokenValidation, detailsUpdate)
 
 
 /*
