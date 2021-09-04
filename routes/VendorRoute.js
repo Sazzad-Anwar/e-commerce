@@ -1,7 +1,17 @@
 //@Description: Admin routes
-const { AccessTokenValidation } = require('auth-middleware-jwt');
+const { AccessTokenValidation, RefreshTokenValidation } = require('auth-middleware-jwt');
 const express = require('express');
-const { login, registration, getVendorDetails, vendorDetailsUpdate, accountActivate, passwordResetEmail, passwordReset, logout } = require('../controllers/VendorController/authController');
+const {
+    login,
+    registration,
+    getVendorDetails,
+    vendorDetailsUpdate,
+    accountActivate,
+    passwordResetEmail,
+    passwordReset,
+    logout,
+    renewTokens
+} = require('../controllers/VendorController/authController');
 const router = express.Router();
 
 /*
@@ -61,5 +71,14 @@ router
     .post(passwordResetEmail)
     .put(passwordReset)
 
+
+/*
+##### @Description: Renew the refresh & access token
+##### Route: /api/v1/vendor/refresh-token
+##### Method: POST
+*/
+router
+    .route('/refresh-token')
+    .post(RefreshTokenValidation, renewTokens)
 
 module.exports = router;

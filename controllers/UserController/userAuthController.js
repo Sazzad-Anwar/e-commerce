@@ -118,6 +118,9 @@ const registration = asyncHandler(async (req, res) => {
 
         user = {
             _id: user._id,
+            name: user.name,
+            email: user.email,
+            photo: user.photo,
             type: 'user',
         }
 
@@ -170,7 +173,7 @@ const registration = asyncHandler(async (req, res) => {
 ##### Method: GET
 */
 const getUserDetails = asyncHandler(async (req, res) => {
-
+    console.log(req.user);
     let userDetails = await Users.findById(req.user._id).select(' -password ');
 
     if (userDetails) {
@@ -341,6 +344,7 @@ const passwordReset = asyncHandler(async (req, res) => {
 const renewTokens = asyncHandler(async (req, res) => {
 
     let { id, token } = req.user;
+
 
     let userExist = await Users.findById({ _id: id }).select('-password');
 
