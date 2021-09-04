@@ -1,5 +1,5 @@
 //@Description: Authentication routes
-const { tokenValidation } = require('auth-middleware-jwt');
+const { AccessTokenValidation, RefreshTokenValidation } = require('auth-middleware-jwt');
 const express = require('express');
 const router = express.Router();
 const {
@@ -10,7 +10,8 @@ const {
     accountActivate,
     passwordResetEmail,
     passwordReset,
-    logout
+    logout,
+    renewTokens
 } = require('../controllers/UserController/userAuthController');
 
 
@@ -27,7 +28,7 @@ router
 //Method: GET
 router
     .route('/logout')
-    .get(tokenValidation, logout)
+    .post(AccessTokenValidation, logout)
 
 
 //@Description: Registration route for user
@@ -42,8 +43,8 @@ router
 //Method: PUT
 router
     .route('/details/')
-    .get(tokenValidation, getUserDetails)
-    .put(tokenValidation, detailsUpdate)
+    .get(AccessTokenValidation, getUserDetails)
+    .put(AccessTokenValidation, detailsUpdate)
 
 
 /*
@@ -64,5 +65,15 @@ router
     .route('/password/reset')
     .post(passwordResetEmail)
     .put(passwordReset)
+
+
+/*
+##### @Description: Renew the refresh & access token
+##### Route: /api/v1/user/refresh-token
+##### Method: POST
+*/
+router
+    .route('/refresh-token')
+    .post(RefreshTokenValidation, renewTokens)
 
 module.exports = router;

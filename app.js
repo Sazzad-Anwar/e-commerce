@@ -15,6 +15,7 @@ const {
     errorHandler,
     notFound
 } = require('./middleware/errorHandler');
+require('./config/db/Redis');
 
 //This will show the request path for every request only for development mode
 if (process.env.NODE_ENV !== 'production') {

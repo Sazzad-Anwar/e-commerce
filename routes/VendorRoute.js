@@ -1,5 +1,5 @@
 //@Description: Admin routes
-const { tokenValidation } = require('auth-middleware-jwt');
+const { AccessTokenValidation } = require('auth-middleware-jwt');
 const express = require('express');
 const { login, registration, getVendorDetails, vendorDetailsUpdate, accountActivate, passwordResetEmail, passwordReset, logout } = require('../controllers/VendorController/authController');
 const router = express.Router();
@@ -20,7 +20,7 @@ router
 */
 router
     .route('/logout')
-    .get(tokenValidation, logout)
+    .get(AccessTokenValidation, logout)
 
 
 /*
@@ -38,8 +38,8 @@ router
 //Method: GET, PUT
 router
     .route('/details')
-    .get(tokenValidation, getVendorDetails)
-    .put(tokenValidation, vendorDetailsUpdate)
+    .get(AccessTokenValidation, getVendorDetails)
+    .put(AccessTokenValidation, vendorDetailsUpdate)
 
 
 /*

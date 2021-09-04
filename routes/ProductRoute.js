@@ -1,5 +1,5 @@
 //@Description: Authentication routes
-const { tokenValidation } = require('auth-middleware-jwt');
+const { AccessTokenValidation } = require('auth-middleware-jwt');
 const express = require('express');
 const {
     addProduct,
@@ -22,7 +22,7 @@ const router = express.Router();
 router
     .route('/')
     .get(getProducts)
-    .post(tokenValidation, addProduct)
+    .post(AccessTokenValidation, addProduct)
 
 
 
@@ -35,8 +35,8 @@ router
 router
     .route('/:id')
     .get(getProduct)
-    .put(tokenValidation, updateProduct)
-    .delete(tokenValidation, deleteProduct)
+    .put(AccessTokenValidation, updateProduct)
+    .delete(AccessTokenValidation, deleteProduct)
 
 
 /*
@@ -47,7 +47,7 @@ router
 */
 router
     .route('/review/:product')
-    .post(tokenValidation, addReview)
+    .post(AccessTokenValidation, addReview)
 
 
 /*
@@ -58,8 +58,8 @@ router
 */
 router
     .route('/review/:id')
-    .get(tokenValidation, getReview)
-    .put(tokenValidation, updateReview)
+    .get(AccessTokenValidation, getReview)
+    .put(AccessTokenValidation, updateReview)
 
 
 module.exports = router;

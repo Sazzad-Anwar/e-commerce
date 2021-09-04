@@ -1,5 +1,5 @@
 //@Description: Authentication routes
-const { tokenValidation } = require('auth-middleware-jwt');
+const { AccessTokenValidation } = require('auth-middleware-jwt');
 const express = require('express');
 const { createCategory, getCategories, updateCategory } = require('../controllers/CategoryController/categoryController');
 const router = express.Router();
@@ -13,8 +13,8 @@ const router = express.Router();
 router
     .route('/')
     .get(getCategories)
-    .post(tokenValidation, createCategory)
-    .put(tokenValidation, updateCategory)
+    .post(AccessTokenValidation, createCategory)
+    .put(AccessTokenValidation, updateCategory)
 
 
 module.exports = router;

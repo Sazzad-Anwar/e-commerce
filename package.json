@@ -25,7 +25,7 @@
     "author": "Md Sazzad Bin Anwar",
     "license": "ISC",
     "dependencies": {
-        "auth-middleware-jwt": "^1.0.8",
+        "auth-middleware-jwt": "^1.0.14",
         "axios": "^0.21.1",
         "bcryptjs": "^2.4.3",
         "colors": "^1.4.0",
@@ -42,6 +42,7 @@
         "nanoid": "^3.1.25",
         "next-pwa": "^5.3.1",
         "nodemailer": "^6.6.3",
+        "redis": "^3.1.2",
         "sequelize": "^6.6.5",
         "uuid": "^8.3.2",
         "winston": "^3.3.3"

@@ -1,8 +1,11 @@
 const asyncHandler = require('express-async-handler');
 const Users = require('../../models/user');
-const { getToken } = require('auth-middleware-jwt');
+const { getAccessToken, getRefreshToken } = require('auth-middleware-jwt');
 const { v4: uuid } = require('uuid');
 const { emailSender } = require('../../libs/emailSender');
+const client = require('../../config/db/Redis');
+const util = require('util');
+client.get = util.promisify(client.get);
 
 
 //##### Description: Controller of Login route for all users
@@ -18,16 +21,30 @@ const login = asyncHandler(async (req, res) => {
     if (userExists && (await userExists.matchPassword(password))) {
         let user = {
             _id: userExists._id,
+            name: userExists.name,
+            email: userExists.email,
+            photo: userExists.photo,
             type: 'user'
         }
 
-        let token = await getToken(user);
+        let accessToken = await getAccessToken(user);
+        let refreshToken = await getRefreshToken({ user: user._id })
 
-        res.cookie("token", `Bearer ${token}`, {
+        client.set(user._id.toString(), refreshToken);
+
+        res.cookie("accessToken", `Bearer ${accessToken}`, {
             httpOnly: true,
             sameSite: 'strict',
             path: '/',
-            expires: new Date(Date.now() + 10 * 1000),
+            expires: new Date(Date.now() + process.env.ACCESS_COOKIE_EXPIRES_IN),
+            secure: process.env.NODE_ENV === 'production' ? true : false
+        });
+
+        res.cookie("refreshToken", `Bearer ${refreshToken}`, {
+            httpOnly: true,
+            sameSite: 'strict',
+            path: '/',
+            expires: new Date(Date.now() + process.env.REFRESH_COOKIE_EXPIRES_IN),
             secure: process.env.NODE_ENV === 'production' ? true : false
         });
 
@@ -37,6 +54,8 @@ const login = asyncHandler(async (req, res) => {
             isSuccess: true,
             data: {
                 isLoggedIn: true,
+                accessToken,
+                refreshToken
             }
         })
 
@@ -53,7 +72,12 @@ const login = asyncHandler(async (req, res) => {
 ##### Method: GET
 */
 const logout = asyncHandler(async (req, res) => {
-    res.clearCookie('token');
+
+    client.del(req.user._id.toString())
+
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+
     res.json({
         code: 200,
         status: 'success',
@@ -106,10 +130,22 @@ const registration = asyncHandler(async (req, res) => {
 
         process.env.NODE_ENV === 'production' ? emailSender(emailData) : null
 
-        let token = await getToken(user);
+        let accessToken = await getAccessToken(user);
+        let refreshToken = await getRefreshToken({ user: user._id })
 
-        res.cookie("token", `Bearer ${token}`, {
+        res.cookie("accessToken", `Bearer ${accessToken}`, {
             httpOnly: true,
+            sameSite: 'strict',
+            path: '/',
+            expires: new Date(Date.now() + process.env.ACCESS_COOKIE_EXPIRES_IN),
+            secure: process.env.NODE_ENV === 'production' ? true : false
+        });
+
+        res.cookie("accessToken", `Bearer ${accessToken}`, {
+            httpOnly: true,
+            sameSite: 'strict',
+            path: '/',
+            expires: new Date(Date.now() + process.env.REFRESH_COOKIE_EXPIRES_IN),
             secure: process.env.NODE_ENV === 'production' ? true : false
         });
 
@@ -118,7 +154,9 @@ const registration = asyncHandler(async (req, res) => {
             status: 'success',
             isSuccess: true,
             data: {
-                token
+                isLoggedIn: true,
+                accessToken,
+                refreshToken
             }
         })
     }
@@ -242,7 +280,7 @@ const passwordResetEmail = asyncHandler(async (req, res) => {
             type: 'Password reset'
         }
 
-        // emailSender(emailData);
+        process.env.NODE_ENV === 'production' ? emailSender(emailData) : null
 
         res.json({
             code: 200,
@@ -293,6 +331,69 @@ const passwordReset = asyncHandler(async (req, res) => {
 
 });
 
+
+
+/*
+##### @Description: Renew the refresh & access token
+##### Route: /api/v1/user/refresh-token
+##### Method: POST
+*/
+const renewTokens = asyncHandler(async (req, res) => {
+
+    let { id, token } = req.user;
+
+    let userExist = await Users.findById({ _id: id }).select('-password');
+
+    let user = {
+        _id: userExist._id,
+        name: userExist.name,
+        email: userExist.email,
+        photo: userExist.photo,
+        type: 'user'
+    }
+
+    let redisToken = await client.get(id);
+
+    if (redisToken === token) {
+
+        let accessToken = await getAccessToken(user);
+        let refreshToken = await getRefreshToken({ user: user._id.toString() });
+
+        await client.set(user._id.toString(), refreshToken);
+
+        res.cookie("accessToken", `Bearer ${accessToken}`, {
+            httpOnly: true,
+            sameSite: 'strict',
+            path: '/',
+            expires: new Date(Date.now() + process.env.ACCESS_COOKIE_EXPIRES_IN),
+            secure: process.env.NODE_ENV === 'production' ? true : false
+        });
+
+        res.cookie("refreshToken", `Bearer ${refreshToken}`, {
+            httpOnly: true,
+            sameSite: 'strict',
+            path: '/',
+            expires: new Date(Date.now() + process.env.REFRESH_COOKIE_EXPIRES_IN),
+            secure: process.env.NODE_ENV === 'production' ? true : false
+        });
+
+        res.json({
+            code: 200,
+            status: 'success',
+            isSuccess: true,
+            data: {
+                isLoggedIn: true,
+                accessToken,
+                refreshToken
+            }
+        })
+
+    } else {
+        res.status(403);
+        throw new Error('Invalid token')
+    }
+});
+
 module.exports = {
     login,
     registration,
@@ -301,5 +402,6 @@ module.exports = {
     getUserDetails,
     passwordResetEmail,
     passwordReset,
-    logout
+    logout,
+    renewTokens
 }
