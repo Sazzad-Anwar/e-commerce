@@ -20,6 +20,8 @@ const addProduct = asyncHandler(async (req, res) => {
         category,
         description,
         specification,
+        shippingCharge,
+        serviceCharge
     } = req.body;
 
 
@@ -32,7 +34,9 @@ const addProduct = asyncHandler(async (req, res) => {
         brand,
         category,
         description,
-        specification
+        specification,
+        shippingCharge,
+        serviceCharge
     });
 
 

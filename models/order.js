@@ -6,51 +6,54 @@ const orderSchema = new mongoose.Schema({
         required: true,
         ref: "User"
     },
-    orderItems: [
-        {
-            qty: { type: String, required: true },
-            price: { type: String, required: true },
-            product: {
-                type: mongoose.Schema.Types.ObjectId,
-                required: true,
-                ref: 'Products'
-            }
-        }
-    ],
-
+    orderItem: {
+        qty: { type: Number, required: true },
+        price: { type: Number, required: true },
+        product: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'Products'
+        },
+        variant_id: { type: mongoose.Schema.Types.ObjectId, },
+        color: { type: String },
+        size: { type: String },
+        image: { type: String }
+    },
     shippingAddress: {
-        address: { type: String, required: true },
-        city: { type: String, required: true },
-        district: { type: String, required: true },
-        division: { type: String, required: true },
+        address: { type: String },
+        city: { type: String },
+        district: { type: String },
+        division: { type: String },
     },
     paymentMethod: {
         type: String,
-        required: true
+        enum: ['Cash-On-Delivery', 'Bkash', 'Nagad', 'Visa-Card', 'Master-Card']
     },
     paymentResult: {
         id: { type: String },
         status: { type: String },
-        update_time: { type: String },
-        email_address: { type: String }
+        updateTime: { type: String },
+        email: { type: String }
     },
     serviceCharge: {
         type: Number,
         default: 0.0
     },
-    shippingPrice: {
+    shippingCharge: {
         type: Number,
-        required: true,
         default: 0.0
+    },
+    shippingStatus: {
+        type: String,
+        enum: ['PENDING', 'CONFIRMED', 'PACKED', 'DISPATCHED', 'DELIVERED'],
+        default: 'PENDING'
     },
     totalPrice: {
         type: Number,
-        required: true,
         default: 0.0
     },
     isPaid: {
         type: Boolean,
-        required: true,
         default: false
     },
     paidAt: {
@@ -58,11 +61,14 @@ const orderSchema = new mongoose.Schema({
     },
     isDelivered: {
         type: Boolean,
-        required: true,
         default: false
     },
     deliveredAt: {
         type: Date
+    },
+    addedToCart: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

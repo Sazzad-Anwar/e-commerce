@@ -80,17 +80,19 @@ const registration = asyncHandler(async (req, res) => {
             httpOnly: true,
             sameSite: 'strict',
             path: '/',
+            sameSite: true,
             expires: new Date(Date.now() + process.env.ACCESS_COOKIE_EXPIRES_IN),
             secure: process.env.NODE_ENV === 'production' ? true : false
         });
 
-        res.cookie("accessToken", `Bearer ${accessToken}`, {
-            httpOnly: true,
-            sameSite: 'strict',
-            path: '/',
-            expires: new Date(Date.now() + process.env.REFRESH_COOKIE_EXPIRES_IN),
-            secure: process.env.NODE_ENV === 'production' ? true : false
-        });
+        // res.cookie("refreshToken", `Bearer ${accessToken}`, {
+        //     httpOnly: true,
+        //     sameSite: 'strict',
+        //     path: '/',
+        //     sameSite: true,
+        //     expires: new Date(Date.now() + process.env.REFRESH_COOKIE_EXPIRES_IN),
+        //     secure: process.env.NODE_ENV === 'production' ? true : false
+        // });
 
         res.json({
             code: 200,
@@ -137,17 +139,19 @@ const login = asyncHandler(async (req, res) => {
             httpOnly: true,
             sameSite: 'strict',
             path: '/',
+            sameSite: true,
             expires: new Date(Date.now() + process.env.ACCESS_COOKIE_EXPIRES_IN),
             secure: process.env.NODE_ENV === 'production' ? true : false
         });
 
-        res.cookie("refreshToken", `Bearer ${refreshToken}`, {
-            httpOnly: true,
-            sameSite: 'strict',
-            path: '/',
-            expires: new Date(Date.now() + process.env.REFRESH_COOKIE_EXPIRES_IN),
-            secure: process.env.NODE_ENV === 'production' ? true : false
-        });
+        // res.cookie("refreshToken", `Bearer ${refreshToken}`, {
+        //     httpOnly: true,
+        //     sameSite: 'strict',
+        //     path: '/',
+        //     sameSite: true,
+        //     expires: new Date(Date.now() + process.env.REFRESH_COOKIE_EXPIRES_IN),
+        //     secure: process.env.NODE_ENV === 'production' ? true : false
+        // });
 
         res.json({
             code: 200,
@@ -407,17 +411,19 @@ const renewTokens = asyncHandler(async (req, res) => {
             httpOnly: true,
             sameSite: 'strict',
             path: '/',
+            sameSite: true,
             expires: new Date(Date.now() + process.env.ACCESS_COOKIE_EXPIRES_IN),
             secure: process.env.NODE_ENV === 'production' ? true : false
         });
 
-        res.cookie("refreshToken", `Bearer ${refreshToken}`, {
-            httpOnly: true,
-            sameSite: 'strict',
-            path: '/',
-            expires: new Date(Date.now() + process.env.REFRESH_COOKIE_EXPIRES_IN),
-            secure: process.env.NODE_ENV === 'production' ? true : false
-        });
+        // res.cookie("refreshToken", `Bearer ${refreshToken}`, {
+        //     httpOnly: true,
+        //     sameSite: 'strict',
+        //     path: '/',
+        //     sameSite: true,
+        //     expires: new Date(Date.now() + process.env.REFRESH_COOKIE_EXPIRES_IN),
+        //     secure: process.env.NODE_ENV === 'production' ? true : false
+        // });
 
         res.json({
             code: 200,

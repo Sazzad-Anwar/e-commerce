@@ -7,6 +7,7 @@ const app = express();
 const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 require('dotenv').config();
 const connect_MongoDB = require('./config/db/MongoDB');
 require('colors');
@@ -23,6 +24,7 @@ if (process.env.NODE_ENV !== 'production') {
     app.use(morgan('dev'));
 }
 
+app.use(helmet());
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -35,11 +37,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 //@Description: To use monogdb connection
 connect_MongoDB('eCommerce');
 
-
 app.use('/api/v1/user', require('./routes/UserRoute'));
 app.use('/api/v1/vendor', require('./routes/VendorRoute'));
 app.use('/api/v1/category', require('./routes/Category'));
 app.use('/api/v1/products', require('./routes/ProductRoute'));
+app.use('/api/v1/orders', require('./routes/Orders'));
 
 // app.get('*', (req, res) => {
 //     res.cookie('XSRF-TOKEN', req.csrfToken())

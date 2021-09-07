@@ -10,9 +10,6 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    image: [
-        { src: { type: String, required: true } }
-    ],
     campaign: {
         status: { type: Boolean, default: false },
         campaignName: { type: String },
@@ -26,14 +23,24 @@ const productSchema = new mongoose.Schema({
         size: { type: String, required: true },
         stock: { type: Number, required: true, default: 0 },
         price: { type: Number, required: true, default: 0 },
+        image: { type: String, required: true },
         sku: {
             type: String,
             required: true,
         },
+        inStock: { type: Boolean, required: true, default: this.stock > 0 ? true : false }
     }],
     brand: {
         type: String,
         required: true
+    },
+    shippingCharge: {
+        type: Number,
+        default: 0.00
+    },
+    serviceCharge: {
+        type: Number,
+        default: 0.00
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,

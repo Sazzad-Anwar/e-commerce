@@ -16,7 +16,7 @@ services:
             - SESSION_SECRET=${SESSION_SECRET}
             - REDIS_URL=redis
             - MONGODB_HOST=mongo
-        command: yarn start
+        command: yarn prod-server-start
 
     mongo:
         image: mongo
