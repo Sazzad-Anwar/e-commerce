@@ -14,10 +14,22 @@ const orderSchema = new mongoose.Schema({
             required: true,
             ref: 'Products'
         },
+        vendor: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'Vendor'
+        },
         variant_id: { type: mongoose.Schema.Types.ObjectId, },
         color: { type: String },
         size: { type: String },
         image: { type: String }
+    },
+    discount: {
+        type: Number,
+        default: 0.00
+    },
+    discountPrice: {
+        type: Number
     },
     shippingAddress: {
         address: { type: String },

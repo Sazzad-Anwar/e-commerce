@@ -189,3 +189,99 @@ This route will give a new `accessToken` and `refreshToken` while the `accessTok
 ---
 
 > A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Add To Cart
+
+This route will allow an authenticated user to add product to cart only. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+
+---
+
+> Route: {{URL}}/api/v1/orders/cart
+
+---
+
+> Method: POST
+
+---
+
+> Protected Route: Need Refresh Token in headers
+
+---
+
+> A successful response will have data object containing the details of product data that has been added to cart as shown in example response
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Update Cart
+
+This route will allow an authenticated user to update product to cart only. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+
+---
+
+> Route: {{URL}}/api/v1/orders/cart
+
+---
+
+> Method: PUT
+
+---
+
+> Protected Route: Need Refresh Token in headers
+
+---
+
+> A successful response will have data object containing the details of product data that has been added to cart as shown in example response
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Get All Cart Products
+
+This route will allow an authenticated user to get all products cart only. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+
+---
+
+> Route: {{URL}}/api/v1/orders/cart
+
+---
+
+> Method: GET
+
+---
+
+> Protected Route: Need Refresh Token in headers
+
+---
+
+> A successful response will have data array containing the details of products data that has been added to cart as shown in example response
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Delete Product From Cart
+
+This route will allow an authenticated user to remove products from cart only. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+
+---
+
+> Route: {{URL}}/api/v1/orders/cart/:id
+
+---
+
+> Method: DELETE
+
+---
+
+> Protected Route: Need Refresh Token in headers
+
+---
+
+> A successful response will have product removed form cart `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
