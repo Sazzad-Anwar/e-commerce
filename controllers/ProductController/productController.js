@@ -42,8 +42,8 @@ const addProduct = asyncHandler(async (req, res) => {
 
     let product = await newProduct.save();
 
-    res.json({
-        code: 200,
+    res.status(201).json({
+        code: 201,
         status: 'success',
         isSuccess: true,
         data: {
@@ -136,8 +136,8 @@ const addReview = asyncHandler(async (req, res) => {
 
         await getProductDetails.save();
 
-        res.json({
-            code: 200,
+        res.status(201).json({
+            code: 201,
             status: 'success',
             isSuccess: true,
             reviews,

@@ -285,3 +285,131 @@ This route will allow an authenticated user to remove products from cart only. T
 ---
 
 > A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Add Category
+
+This route will allow an authenticated vendor to add product categories. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+
+---
+
+> Route: {{URL}}/api/v1/category
+
+---
+
+> Method: POST
+
+---
+
+> Protected Route: Need Refresh Token in headers
+
+---
+
+> A successful response will have an object containing inserted category along with `status`, `code` & `isSuccess` data as shown in example response
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Update Category
+
+This route will allow an authenticated vendor to update product categories. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+
+---
+
+> Route: {{URL}}/api/v1/category
+
+---
+
+> Method: PUT
+
+---
+
+> Protected Route: Need Refresh Token in headers
+
+---
+
+> A successful response will have an object containing updated category along with `status`, `code` & `isSuccess` data as shown in example response
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Get Category
+
+This route will allow all user to get product categories.
+
+---
+
+> Route: {{URL}}/api/v1/category
+
+---
+
+> Method: GET
+
+---
+
+> A successful response will have an array containing all categories along with `status`, `code` & `isSuccess` data as shown in example response. To get a specific category set `category` or `subCategory` or `item` or all as `query parameter` as shown in example.
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Set Shipping Address to order
+
+This route will allow an authenticated user to update the shipping address of the order. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+
+---
+
+> Route: {{URL}}/orders/addShippingAddress/:orderId
+
+---
+
+> Method: PUT
+
+---
+
+> A successful response will have an object containing order data along with `status`, `code` & `isSuccess` data as shown in example response.
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Update Payment Status
+
+This route will allow an authenticated user to update the payment details of the order. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+
+---
+
+> Route: {{URL}}/orders/payment/:orderId
+
+---
+
+> Method: PUT
+
+---
+
+> A successful response will have an object containing order data along with `status`, `code` & `isSuccess` data as shown in example response.
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Update Shipping Status
+
+This route will allow an authenticated vendor to update the shipping status of the order. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+
+---
+
+> Route: {{URL}}/orders/updateShippingStatus/:orderId
+
+---
+
+> Method: PUT
+
+---
+
+> A successful response will have an object containing order data along with `status`, `code` & `isSuccess` data as shown in example response.
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response

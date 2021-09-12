@@ -94,8 +94,8 @@ const registration = asyncHandler(async (req, res) => {
         //     secure: process.env.NODE_ENV === 'production' ? true : false
         // });
 
-        res.json({
-            code: 200,
+        res.status(201).json({
+            code: 201,
             status: 'success',
             isSuccess: true,
             data: {

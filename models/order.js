@@ -37,15 +37,28 @@ const orderSchema = new mongoose.Schema({
         district: { type: String },
         division: { type: String },
     },
-    paymentMethod: {
-        type: String,
-        enum: ['Cash-On-Delivery', 'Bkash', 'Nagad', 'Visa-Card', 'Master-Card']
-    },
     paymentResult: {
         id: { type: String },
         status: { type: String },
-        updateTime: { type: String },
-        email: { type: String }
+        updateTime: { type: Date },
+        email: { type: String },
+        paymentMethod: {
+            type: String,
+            enum: ['Cash-On-Delivery', 'Bkash', 'Nagad', 'Visa-Card', 'Master-Card']
+        },
+    },
+    refund: {
+        asked: { type: Boolean, default: false },
+        reason: {
+            type: String,
+            enum: [
+                'I got the wrong product',
+                'The product is not the same I ordered',
+                'The product is broken',
+                'The product is not delivered yet'
+            ]
+        },
+        photo: [{ type: String }]
     },
     serviceCharge: {
         type: Number,
@@ -57,7 +70,7 @@ const orderSchema = new mongoose.Schema({
     },
     shippingStatus: {
         type: String,
-        enum: ['PENDING', 'CONFIRMED', 'PACKED', 'DISPATCHED', 'DELIVERED'],
+        enum: ['PENDING', 'PACKED', 'DISPATCHED', 'DELIVERED'],
         default: 'PENDING'
     },
     totalPrice: {
@@ -80,7 +93,7 @@ const orderSchema = new mongoose.Schema({
     },
     addedToCart: {
         type: Boolean,
-        default: false
+        default: true
     }
 }, {
     timestamps: true

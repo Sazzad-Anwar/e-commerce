@@ -4,15 +4,14 @@ const mongoose = require('mongoose');
 const categorySchema = new mongoose.Schema({
     category: {
         type: String,
+        required: true,
     },
     subCategory: {
         type: String,
-        unique: true,
     },
-    tree: [{
+    item: {
         type: String,
-        unique: true
-    }],
+    }
 }, {
     timestamps: true
 });

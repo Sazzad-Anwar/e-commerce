@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const { AccessTokenValidation } = require('auth-middleware-jwt');
-const { cart, deleteCart } = require('../controllers/Orders/addToCart');
+const { cart, deleteCart, payment, addShippingAddress, shippingStatus, refundOrder } = require('../controllers/Orders/addToCart');
 
 
 /*
 ##### @Description: Add a product to cart
-##### Route: /api/v1/order/cart
+##### Route: /api/v1/orders/cart
 ##### Method: POST
 ##### Access: User
 */
@@ -18,13 +18,58 @@ router
 
 /*
 ##### @Description: Delete a product from the cart
-##### Route: /api/v1/order/cart/:id
+##### Route: /api/v1/orders/cart/:id
 ##### Method: Delete
 ##### Access: User
 */
 router
     .route('/cart/:id')
     .delete(AccessTokenValidation, deleteCart);
+
+
+/*
+##### @Description: Add shipping address
+##### Route: /api/v1/orders/addShippingAddress/:orderId
+##### Method: PUT
+##### Access: User
+*/
+router
+    .route('/addShippingAddress/:orderId')
+    .put(AccessTokenValidation, addShippingAddress)
+
+/*
+##### @Description: Proceed to payment
+##### Route: /api/v1/orders/payment/:orderId
+##### Method: POST, PUT
+##### Access: User
+*/
+router
+    .route('/payment/:orderId')
+    .put(AccessTokenValidation, payment)
+
+
+
+/*
+##### @Description: Shipping Status
+##### Route: /api/v1/orders/updateShippingStatus/:orderId
+##### Method: PUT
+##### Access: Vendor
+*/
+router
+    .route('/updateShippingStatus/:orderId')
+    .put(AccessTokenValidation, shippingStatus)
+
+
+
+/*
+##### @Description: Order refund
+##### Route: /api/v1/orders/refund/:orderId
+##### Method: POST
+##### Access: User
+*/
+router
+    .route('/refund/:orderId')
+    .put(AccessTokenValidation, refundOrder)
 
 
 module.exports = router;

@@ -17,11 +17,10 @@ exports.errorHandler = async (err, req, res, next) => {
             stack: err.stack
         })
 
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && statusCode === 500) {
             await newError.save();
+            logger(err.message, err.stack, req.headers['x-forwarded-for'] || req.socket.remoteAddress)
         }
-
-        logger(err.message, err.stack, req.headers['x-forwarded-for'] || req.socket.remoteAddress)
 
         res.json({
             message: err.message,
