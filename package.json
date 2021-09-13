@@ -6,21 +6,19 @@
     "scripts": {
         "server-install": "yarn && yarn add -D nodemon morgan concurrently && yarn add axios bcryptjs cors dotenv express express-async-handler multer mongoose uuid helmet nanoid winston cookie-parser jsonwebtoken colors auth-middleware-jwt",
         "start": "node app.js",
-        "dev-server": "nodemon -L app.js",
+        "dev-start": "nodemon -L app.js",
         "client": "cd client && yarn dev",
         "build-client": "cd client && yarn build",
         "client-install": "cd client && yarn && yarn lint && yarn install-packages",
         "install-all": "yarn server-install && yarn client-install",
         "dev": "concurrently \"yarn dev-server\" \"yarn client\"",
-        "docker-build-start-dev": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d --build",
-        "docker-start-dev": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d",
-        "docker-stop-dev": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml down",
-        "docker-build-start-prod": "docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build",
-        "docker-start-prod": "docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d",
-        "docker-stop-prod": "docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml down",
-        "request-handle-check": "autocannon -c 12 http://localhost:8080",
-        "prod-server-start": "pm2 start app.js -i max",
-        "prod-server-stop": "pm2 stop app.js"
+        "docker-build-dev-start": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d --build",
+        "docker-dev-start": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d",
+        "docker-dev-stop": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml down",
+        "docker-prod-build-start": "docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build",
+        "docker-prod-start": "docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d",
+        "docker-prod-stop": "docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml down",
+        "request-handle-check": "autocannon -c 10 http://localhost:8080/api/v1/checkStatus"
     },
     "keywords": [
         "MERN Framework, Next.js, redux, node, express, mongoDB"
@@ -33,6 +31,7 @@
         "axios": "^0.21.1",
         "bcryptjs": "^2.4.3",
         "colors": "^1.4.0",
+        "compression": "^1.7.4",
         "cookie-parser": "^1.4.5",
         "cors": "^2.8.5",
         "dotenv": "^10.0.0",

@@ -3,7 +3,7 @@ services:
     nginx:
         ports:
             - '80:80'
-    e-commerce:
+    node-app:
         build: .
         image: sazzadzihan/e-commerce-app
         depends_on:
@@ -16,7 +16,7 @@ services:
             - SESSION_SECRET=${SESSION_SECRET}
             - REDIS_URL=redis
             - MONGODB_HOST=mongo
-        command: yarn prod-server-start
+        command: pm2-runtime app.js
 
     mongo:
         image: mongo

@@ -3,7 +3,7 @@ services:
     nginx:
         ports:
             - '8080:80'
-    e-commerce:
+    node-app:
         build: .
         depends_on:
             - mongo
@@ -32,7 +32,7 @@ services:
             - COMPANY_NAME=e-commerce-paltform
             - APP_URL=http://localhost:8080
             - PASSWORD_RESET_LINK_VALIDATION_TIME=300000
-        command: yarn dev-server
+        command: pm2-runtime app.js
 
     mongo:
         image: mongo

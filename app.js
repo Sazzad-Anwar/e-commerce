@@ -8,6 +8,8 @@ const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
+const compression = require('compression');
+const cpu = require('os').cpus();
 require('dotenv').config();
 const connect_MongoDB = require('./config/db/MongoDB');
 require('colors');
@@ -24,6 +26,8 @@ if (process.env.NODE_ENV !== 'production') {
     app.use(morgan('dev'));
 }
 
+app.use(compression());
+app.enable('trust proxy')
 app.use(helmet());
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
@@ -42,6 +46,7 @@ app.use('/api/v1/vendor', require('./routes/VendorRoute'));
 app.use('/api/v1/category', require('./routes/Category'));
 app.use('/api/v1/products', require('./routes/ProductRoute'));
 app.use('/api/v1/orders', require('./routes/Orders'));
+app.get('/api/v1/checkStatus', (req, res) => res.json({ status: 'Ok updated', host: req.hostname }));
 
 // app.get('*', (req, res) => {
 //     res.cookie('XSRF-TOKEN', req.csrfToken())
