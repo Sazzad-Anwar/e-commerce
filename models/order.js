@@ -19,7 +19,7 @@ const orderSchema = new mongoose.Schema({
             required: true,
             ref: 'Vendor'
         },
-        variant_id: { type: mongoose.Schema.Types.ObjectId, },
+        variantId: { type: mongoose.Schema.Types.ObjectId, },
         color: { type: String },
         size: { type: String },
         image: { type: String }

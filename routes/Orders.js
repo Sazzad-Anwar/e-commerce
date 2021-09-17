@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const { AccessTokenValidation } = require('auth-middleware-jwt');
-const { cart, deleteCart, payment, addShippingAddress, shippingStatus, refundOrder } = require('../controllers/Orders/addToCart');
+const { cart, deleteCart } = require('../controllers/Orders/cart');
+const { payment, refundOrder } = require('../controllers/Orders/payment');
+const { addShippingAddress, shippingStatus } = require('../controllers/Orders/shipping');
 
 
 /*
