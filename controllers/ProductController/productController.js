@@ -21,7 +21,8 @@ const addProduct = asyncHandler(async (req, res) => {
         description,
         specification,
         shippingCharge,
-        serviceCharge
+        serviceCharge,
+        location,
     } = req.body;
 
 
@@ -36,7 +37,8 @@ const addProduct = asyncHandler(async (req, res) => {
         description,
         specification,
         shippingCharge,
-        serviceCharge
+        serviceCharge,
+        location
     });
 
 
@@ -60,27 +62,93 @@ const addProduct = asyncHandler(async (req, res) => {
 ##### Method: GET
 */
 const getProducts = asyncHandler(async (req, res) => {
-    const search = req.query.search ? {
-        search: {
+    const productName = req.query.search ? {
+        name: {
             $regex: req.query.search,
             $options: 'i'
         }
     } : {}
 
-    const products = await Products.find({ ...search }).populate({
-        path: "reviews",
-        populate: {
-            path: 'user',
-            select: "name photo"
+    const shopName = req.query.search ? {
+        shopName: {
+            $regex: req.query.search,
+            $options: 'i'
         }
-    })
+    } : {}
 
-    if (products.length) {
+    const brand = req.query.search ? {
+        brand: {
+            $regex: req.query.search,
+            $options: 'i'
+        }
+    } : {}
+
+    const location = req.query.location ? {
+        location: {
+            $regex: req.query.location,
+            $options: 'i'
+        }
+    } : {}
+
+    let { limit, lastId } = req.query;
+
+    let products;
+
+    if (!lastId || lastId === undefined) {
+        products = await Products
+            .find({ $and: [{ ...location }, { $or: [{ ...productName }, { ...brand }] }] })
+            .sort({ _id: -1 })
+            .limit(limit ? parseInt(limit) : 50)
+            .populate([{
+                path: "reviews",
+                populate: {
+                    path: 'user',
+                    select: "name photo"
+                }
+            }, {
+                path: 'vendor',
+                select: 'shopName'
+            }, {
+                path: 'category',
+                select: "_id category subCategory item"
+            }])
+    }
+
+    if (limit && lastId) {
+        products = await Products
+            .find({
+                $and: [
+                    { ...location },
+                    { $or: [{ ...productName }, { ...shopName }, { ...brand }] },
+                    { _id: { $lt: lastId } }
+                ]
+            })
+            .sort({ _id: -1 })
+            .limit(parseInt(limit))
+            .populate([{
+                path: "reviews",
+                populate: {
+                    path: 'user',
+                    select: "name photo"
+                }
+            }, {
+                path: 'vendor',
+                select: 'shopName'
+            }, {
+                path: 'category',
+                select: "_id category subCategory item"
+            }])
+    }
+
+
+    if (products?.length) {
         res.json({
             code: 200,
             status: 'success',
             isSuccess: true,
             data: {
+                length: products.length,
+                lastId: products[products.length - 1]._id,
                 products
             }
         })

@@ -5,20 +5,36 @@ const vendorSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Name is required'],
+        tags: {
+            type: [String],
+            index: true
+        }
     },
     shopName: {
         type: String,
-        required: [true, 'Shop Name is required']
+        required: [true, 'Shop Name is required'],
+        tags: {
+            type: [String],
+            index: true
+        }
     },
     email: {
         type: String,
         required: [true, 'Email is required'],
         unique: [true, 'This email is taken'],
+        tags: {
+            type: [String],
+            index: true
+        }
     },
     phone: {
         type: String,
         required: [true, 'Phone number is required'],
         unique: [true, 'This phone number is taken'],
+        tags: {
+            type: [String],
+            index: true
+        }
     },
     shopAddress: {
         type: String,
@@ -45,7 +61,11 @@ const vendorSchema = new mongoose.Schema({
     },
     NID: {
         type: String,
-        required: [true, 'NId is required']
+        required: [true, 'NId is required'],
+        tags: {
+            type: [String],
+            index: true
+        }
     },
     password: {
         type: String,

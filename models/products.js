@@ -8,7 +8,8 @@ const productSchema = new mongoose.Schema({
     },
     name: {
         type: String,
-        required: true
+        required: true,
+        tags: { type: [String], index: true }
     },
     campaign: {
         status: { type: Boolean, default: false },
@@ -17,6 +18,12 @@ const productSchema = new mongoose.Schema({
         banners: [
             { src: { type: String } }
         ]
+    },
+    location: {
+        type: String,
+        required: true,
+        unique: true,
+        tags: { type: [String], index: true }
     },
     variant: [{
         color: { type: String, required: true },
@@ -32,7 +39,8 @@ const productSchema = new mongoose.Schema({
     }],
     brand: {
         type: String,
-        required: true
+        required: true,
+        tags: { type: [String], index: true }
     },
     shippingCharge: {
         type: Number,

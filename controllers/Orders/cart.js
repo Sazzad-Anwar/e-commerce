@@ -54,13 +54,13 @@ const cart = asyncHandler(async (req, res) => {
                     .find({
                         $and: [
                             { user: req.user._id },
-                            { _id: { $gt: lastId } }
+                            { _id: { $lt: lastId } }
                         ]
                     })
                     .sort({
                         _id: -1
                     })
-                    .limit(limit ? parseInt(limit) : 10)
+                    .limit(limit ? parseInt(limit) : 50)
                     .populate({
                         path: 'orderItem',
                         populate: [
@@ -92,7 +92,9 @@ const cart = asyncHandler(async (req, res) => {
                         cart: cart,
                     }
                 })
+
             } else {
+
                 res.status(404).json({
                     code: 404,
                     isSuccess: false,

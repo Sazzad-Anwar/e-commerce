@@ -5,12 +5,15 @@ const categorySchema = new mongoose.Schema({
     category: {
         type: String,
         required: true,
+        tags: { type: [String], index: true }
     },
     subCategory: {
         type: String,
+        tags: { type: [String], index: true }
     },
     item: {
         type: String,
+        tags: { type: [String], index: true }
     }
 }, {
     timestamps: true

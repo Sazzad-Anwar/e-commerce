@@ -5,16 +5,28 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Name is required'],
+        tags: {
+            type: [String],
+            index: true
+        }
     },
     email: {
         type: String,
         required: [true, 'Email is required'],
         unique: [true, 'This email is taken'],
+        tags: {
+            type: [String],
+            index: true
+        }
     },
     phone: {
         type: String,
         required: [true, 'Phone number is required'],
         unique: [true, 'This phone number is taken'],
+        tags: {
+            type: [String],
+            index: true
+        }
     },
     address: {
         type: String,
