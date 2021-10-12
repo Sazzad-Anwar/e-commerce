@@ -1,5 +1,7 @@
 const Order = require('../../models/order');
 const asyncHandler = require('express-async-handler');
+const Products = require('../../models/products');
+const mongoose = require('mongoose');
 
 /*
 ##### @Description: Proceed to payment
@@ -33,7 +35,41 @@ const payment = asyncHandler(async (req, res) => {
             ]
         });
 
-        if (order) {
+        const getProductVariantDetails = async () => {
+            let productDetails = await Products.findOne({ _id: order.orderItem.product._id }).select('variant');
+
+            let variant = productDetails.variant.filter(eachVariant => (eachVariant._id).toString() === (order.orderItem.variantId).toString())[0];
+
+            return {
+                variant,
+                inStock: variant.stock >= order.orderItem.qty ? true : false
+            }
+        }
+
+        let { variant, inStock } = await getProductVariantDetails();
+
+        if (order && inStock) {
+
+            // update product stock and inStock status
+            if (parseInt(variant.stock) - parseInt(order.orderItem.qty) <= 0) {
+                await Products.updateOne(
+                    { 'variant._id': order.orderItem.variantId },
+                    {
+                        $set: {
+                            'variant.$.stock': parseInt(parseInt(variant.stock) - parseInt(order.orderItem.qty)),
+                            'variant.$.inStock': false
+                        }
+                    })
+            } else {
+                await Products.updateOne(
+                    { 'variant._id': order.orderItem.variantId },
+                    {
+                        $set: {
+                            'variant.$.stock': parseInt(parseInt(variant.stock) - parseInt(order.orderItem.qty)),
+                            'variant.$.inStock': false
+                        }
+                    })
+            }
 
             if (paymentMethod !== 'Cash-On-Delivery') {
 
@@ -62,7 +98,16 @@ const payment = asyncHandler(async (req, res) => {
                 }
             });
 
-        } else {
+        }
+        else if (order && !inStock) {
+            res.status(404).json({
+                code: 404,
+                isSuccess: false,
+                status: 'failed',
+                message: `The product ${orderId} you choose is out of stock !`
+            });
+        }
+        else {
             res.status(404).json({
                 code: 404,
                 isSuccess: false,

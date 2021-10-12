@@ -28,14 +28,15 @@ const productSchema = new mongoose.Schema({
     variant: [{
         color: { type: String, required: true },
         size: { type: String, required: true },
-        stock: { type: Number, required: true, default: 0 },
-        price: { type: Number, required: true, default: 0 },
+        stock: { type: Number, required: true, default: 1 },
+        price: { type: Number, required: true, default: 0.00 },
         image: { type: String, required: true },
         sku: {
             type: String,
             required: true,
         },
-        inStock: { type: Boolean, required: true, default: this.stock > 0 ? true : false }
+        inStock: { type: Boolean, required: true, default: true },
+        purchasePrice: { type: Number, required: true, default: 0.00 }
     }],
     brand: {
         type: String,

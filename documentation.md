@@ -413,3 +413,23 @@ This route will allow an authenticated vendor to update the shipping status of t
 ---
 
 > A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Ask for refund
+
+This route will allow an authenticated user to ask for refund of a delivered product. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+
+---
+
+> Route: {{URL}}/orders/:orderId/refund
+
+---
+
+> Method: PUT
+
+---
+
+> A successful response will have an object containing order data along with `status`, `code` & `isSuccess` data as shown in example response.
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response

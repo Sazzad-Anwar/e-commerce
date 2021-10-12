@@ -41,7 +41,7 @@ const orderSchema = new mongoose.Schema({
         id: { type: String },
         status: { type: String },
         updateTime: { type: Date },
-        email: { type: String },
+        transactionId: { type: String },
         paymentMethod: {
             type: String,
             enum: ['Cash-On-Delivery', 'Bkash', 'Nagad', 'Visa-Card', 'Master-Card']

@@ -70,7 +70,7 @@ router
 ##### Access: User
 */
 router
-    .route('/refund/:orderId')
+    .route('/:orderId/refund')
     .put(AccessTokenValidation, refundOrder)
 
 

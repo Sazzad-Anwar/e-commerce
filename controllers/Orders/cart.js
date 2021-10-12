@@ -116,7 +116,7 @@ const cart = asyncHandler(async (req, res) => {
             orderItem.qty = product.quantity;
             orderItem.price = variant[0].price;
             orderItem.product = product._id;
-            orderItem.variant_id = variant[0]._id;
+            orderItem.variantId = variant[0]._id;
             orderItem.color = variant[0]?.color;
             orderItem.size = variant[0]?.size;
             orderItem.image = variant[0]?.image;
