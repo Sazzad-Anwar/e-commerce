@@ -3,6 +3,9 @@ const Vendor = require('../../models/vendor');
 const Products = require('../../models/products');
 const Reviews = require('../../models/reviews');
 const removeFile = require('../../libs/removeFile');
+const client = require('../../config/db/Redis');
+const util = require('util');
+client.get = util.promisify(client.get);
 
 /*
 ##### @Description: Add Products

@@ -1,12 +1,13 @@
 const Order = require('../../models/order');
 const asyncHandler = require('express-async-handler');
 const Products = require('../../models/products');
-const mongoose = require('mongoose');
+const { v4: uuidV4 } = require('uuid');
+const { emailSender } = require('../../libs/emailSender');
 
 /*
 ##### @Description: Proceed to payment
-##### Route: /api/v1/orders/payment/:orderId
-##### Method: Delete
+##### Route: /api/v1/orders/:orderId/payment
+##### Method: PUT
 ##### Access: User
 */
 const payment = asyncHandler(async (req, res) => {
@@ -56,8 +57,9 @@ const payment = asyncHandler(async (req, res) => {
                     { 'variant._id': order.orderItem.variantId },
                     {
                         $set: {
-                            'variant.$.stock': parseInt(parseInt(variant.stock) - parseInt(order.orderItem.qty)),
-                            'variant.$.inStock': false
+                            'variant.$.stock': (parseInt(variant.stock) - parseInt(order.orderItem.qty)),
+                            'variant.$.inStock': false,
+                            'variant.$.sales': parseInt(variant.sales) + parseInt(order.orderItem.qty)
                         }
                     })
             } else {
@@ -70,6 +72,16 @@ const payment = asyncHandler(async (req, res) => {
                         }
                     })
             }
+
+            let emailData = {
+                name: req.user.name,
+                email: req.user.email,
+                type: 'Order Invoice',
+                user: req.user,
+                order
+            }
+
+            process.env.NODE_ENV !== 'production' ? emailSender(emailData) : null
 
             if (paymentMethod !== 'Cash-On-Delivery') {
 
@@ -84,6 +96,10 @@ const payment = asyncHandler(async (req, res) => {
             } else {
 
                 order.paymentResult.paymentMethod = paymentMethod;
+                order.paymentResult.id = uuidV4();
+                order.paymentResult.status = 'Due'
+                order.paidAt = '';
+                order.isPaid = false;
                 order.addToCart = false;
             }
 

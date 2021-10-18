@@ -1,4 +1,4 @@
-const { activationEmail, passwordResetEmail } = require("./emailTemplates");
+const { activationEmail, passwordResetEmail, orderInvoice } = require("./emailTemplates");
 
 module.exports = (data) => {
 
@@ -17,6 +17,15 @@ module.exports = (data) => {
             to: data.email,
             subject: data.type,
             html: passwordResetEmail(data.name, data.resetLink),
+        };
+    }
+
+    if (data.type === 'Order Invoice') {
+        return {
+            from: process.env.EMAIL_FROM,
+            to: data.email,
+            subject: data.type,
+            html: orderInvoice(data.order, data.user,),
         };
     }
 

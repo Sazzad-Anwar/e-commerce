@@ -74,7 +74,7 @@ const registration = asyncHandler(async (req, res) => {
         process.env.NODE_ENV === 'production' ? emailSender(emailData) : null
 
         let accessToken = await getAccessToken(user);
-        let refreshToken = await getRefreshToken({ user: vendor._id })
+        let refreshToken = await getRefreshToken({ user: { _id: user._id.toString() } })
 
         res.cookie("accessToken", `Bearer ${accessToken}`, {
             httpOnly: true,
@@ -131,7 +131,7 @@ const login = asyncHandler(async (req, res) => {
         }
 
         let accessToken = await getAccessToken(user);
-        let refreshToken = await getRefreshToken({ user: user._id })
+        let refreshToken = await getRefreshToken(user)
 
         client.set(user._id.toString(), refreshToken);
 
@@ -403,7 +403,7 @@ const renewTokens = asyncHandler(async (req, res) => {
     if (redisToken === token) {
 
         let accessToken = await getAccessToken(user);
-        let refreshToken = await getRefreshToken({ user: user._id.toString() });
+        let refreshToken = await getRefreshToken(user);
 
         await client.set(user._id.toString(), refreshToken);
 

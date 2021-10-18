@@ -2,7 +2,7 @@
     <img src="./public/images/logo.png" />
 </div>
 
-### This e-commerce solution will provide you the single vendor/multi-vendor application with admin panel where a vendor can do all necessery things in this. The tech stack has been used is MERN (MongoDB, Express, React(Next.js), Node.js). This app has been built on REST API with JWT authentication. The features have been listed as below
+### This e-commerce solution will provide you the single vendor/multi-vendor application with admin panel where a vendor can do all necessary tasks in this. The tech stack has been used is MERN (MongoDB, Express, React(Next.js), Node.js). This app has been built on REST API with JWT authentication. The features have been listed as below
 
 ### **For Users**
 
@@ -12,11 +12,20 @@
 -   User details update
 -   Send password reset link in email
 -   Password reset
--   Add product review
--   Update product review
--   Get products by ID
--   Get products by search
--   Get filtered products
+-   Product Section:
+    -   Add product to cart
+    -   Remove product from cart
+    -   Update product of cart
+    -   Add product review
+    -   Update product review
+    -   Get products by ID
+    -   Get products by search
+    -   Get filtered products
+    -   Payment Gateway API integration
+    -   On payment done email the invoice to the user
+    -   Ask for refund of the purchased product
+    -   Track the product delivery status
+    -   Chat with the vendor directly from user account without third-party library
 
 ### **For Vendors**
 

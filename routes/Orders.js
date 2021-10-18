@@ -41,12 +41,12 @@ router
 
 /*
 ##### @Description: Proceed to payment
-##### Route: /api/v1/orders/payment/:orderId
-##### Method: POST, PUT
+##### Route: /api/v1/orders/:orderId/payment
+##### Method: PUT
 ##### Access: User
 */
 router
-    .route('/payment/:orderId')
+    .route('/:orderId/payment')
     .put(AccessTokenValidation, payment)
 
 

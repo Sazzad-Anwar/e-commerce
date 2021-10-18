@@ -15,8 +15,8 @@ export default function Home() {
 
   let login = async () => {
     try {
-      let { data } = await axiosInstance.post('/user/login', {
-        "email": "Celestino86@yahoo.com",
+      let { data } = await axiosInstance.post('/vendor/login', {
+        "email": "Marcia34@hotmail.com",
         "password": "Test123456*"
       })
 
@@ -30,7 +30,7 @@ export default function Home() {
   }
   const getDetails = async () => {
     try {
-      const { data } = await axiosInstance.get('/user/details', { withCredentials: true });
+      const { data } = await axiosInstance.get('/vendor/details', { withCredentials: true });
       setUser(data.data?.user)
     } catch (error) {
       setUser()
@@ -44,7 +44,7 @@ export default function Home() {
   }
 
   const getAccessToken = async () => {
-    let { data } = await axios.post(`${BaseURL}/user/refresh-token`, {
+    let { data } = await axios.post(`${BaseURL}/vendor/refresh-token`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
         contentType: 'application/json',
@@ -60,7 +60,7 @@ export default function Home() {
 
   const logout = async () => {
     try {
-      const { data } = await axiosInstance.post('/user/logout', { withCredentials: true })
+      const { data } = await axiosInstance.post('/vendor/logout', { withCredentials: true })
       setUser()
       setLoginData()
     } catch (error) {

@@ -380,7 +380,7 @@ This route will allow an authenticated user to update the payment details of the
 
 ---
 
-> Route: {{URL}}/orders/payment/:orderId
+> Route: {{URL}}/orders/:orderId/payment
 
 ---
 

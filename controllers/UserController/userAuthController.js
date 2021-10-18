@@ -24,11 +24,12 @@ const login = asyncHandler(async (req, res) => {
             name: userExists.name,
             email: userExists.email,
             photo: userExists.photo,
+            phone: userExists.phone,
             type: 'user'
         }
 
         let accessToken = await getAccessToken(user);
-        let refreshToken = await getRefreshToken({ user: user._id })
+        let refreshToken = await getRefreshToken(user)
 
         client.set(user._id.toString(), refreshToken);
 
@@ -123,6 +124,7 @@ const registration = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             photo: user.photo,
+            phone: user.phone,
             type: 'user',
         }
 
@@ -364,7 +366,7 @@ const renewTokens = asyncHandler(async (req, res) => {
     if (redisToken === token) {
 
         let accessToken = await getAccessToken(user);
-        let refreshToken = await getRefreshToken({ user: user._id.toString() });
+        let refreshToken = await getRefreshToken(user);
 
         await client.set(user._id.toString(), refreshToken);
 

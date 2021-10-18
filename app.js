@@ -48,7 +48,7 @@ app.use('/api/v1/products', require('./routes/ProductRoute'));
 app.use('/api/v1/orders', require('./routes/Orders'));
 app.get('/api/v1/checkStatus', (req, res) => res.json({ status: 'Ok updated', host: req.hostname }));
 
-// app.get('*', (req, res) => {
+// app.get('/admin/*', (req, res) => {
 //     res.cookie('XSRF-TOKEN', req.csrfToken())
 //     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 //     console.log('Build file connected');
@@ -58,3 +58,10 @@ app.use(errorHandler);
 
 
 app.listen(port, () => console.log(`App is listening on port ${port}!`.cyan.underline));
+
+process.on('SIGTERM', () => {
+    debug('SIGTERM signal received: closing HTTP server')
+    server.close(() => {
+        debug('HTTP server closed')
+    })
+})

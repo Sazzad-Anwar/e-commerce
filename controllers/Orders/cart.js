@@ -12,7 +12,7 @@ const cart = asyncHandler(async (req, res) => {
 
     if (req.user.type === 'user') {
 
-        let { limit, lastId } = req.query;
+        let { limit, lastId, pastOrder, currentOrder } = req.query;
 
         if (req.method === 'GET') {
 
@@ -110,6 +110,7 @@ const cart = asyncHandler(async (req, res) => {
             const { product } = req.body;
 
             let orderItem = {};
+            let user = req.user;
 
             let cartProduct = await Products.findById(product._id);
             let variant = cartProduct?.variant?.filter(productVariant => productVariant._id.toString() === product.variantId);

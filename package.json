@@ -50,8 +50,11 @@
         "winston": "^3.3.3"
     },
     "devDependencies": {
+        "autoprefixer": "^9",
         "concurrently": "^6.2.1",
         "morgan": "^1.10.0",
-        "nodemon": "^2.0.12"
+        "nodemon": "^2.0.12",
+        "postcss": "^7",
+        "tailwindcss": "npm:@tailwindcss/postcss7-compat"
     }
 }
