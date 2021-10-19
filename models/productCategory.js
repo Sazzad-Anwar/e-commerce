@@ -3,18 +3,14 @@ const mongoose = require('mongoose');
 // Trees using Ancestors Array
 const categorySchema = new mongoose.Schema({
     category: {
-        type: String,
-        required: true,
-        tags: { type: [String], index: true }
+        type: String, required: true, tags: { type: [String], index: true }
     },
-    subCategory: {
-        type: String,
-        tags: { type: [String], index: true }
-    },
-    item: {
-        type: String,
-        tags: { type: [String], index: true }
-    }
+    subCategory: [
+        { type: String }
+    ],
+    item: [
+        { type: String }
+    ]
 }, {
     timestamps: true
 });

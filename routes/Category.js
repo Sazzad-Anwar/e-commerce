@@ -2,6 +2,7 @@
 const { AccessTokenValidation } = require('auth-middleware-jwt');
 const express = require('express');
 const { createCategory, getCategories, updateCategory } = require('../controllers/CategoryController/categoryController');
+const { vendorAccess } = require('../middleware/checkUser');
 const router = express.Router();
 
 /*
@@ -13,8 +14,8 @@ const router = express.Router();
 router
     .route('/')
     .get(getCategories)
-    .post(AccessTokenValidation, createCategory)
-    .put(AccessTokenValidation, updateCategory)
+    .post(AccessTokenValidation, vendorAccess, createCategory)
+    .delete(AccessTokenValidation, vendorAccess, updateCategory)
 
 
 module.exports = router;

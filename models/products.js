@@ -19,6 +19,9 @@ const productSchema = new mongoose.Schema({
             { src: { type: String } }
         ]
     },
+    category: { type: String, required: true },
+    subCategory: { type: String },
+    item: { type: String, required: true },
     location: {
         type: String,
         required: true,
@@ -51,11 +54,6 @@ const productSchema = new mongoose.Schema({
     serviceCharge: {
         type: Number,
         default: 0.00
-    },
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "Category"
     },
     description: {
         type: String,
