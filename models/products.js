@@ -28,6 +28,10 @@ const productSchema = new mongoose.Schema({
         unique: true,
         tags: { type: [String], index: true }
     },
+    seo: {
+        metaTag: { type: String },
+        description: { type: String },
+    },
     variant: [{
         color: { type: String, required: true },
         size: { type: String, required: true },
