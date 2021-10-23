@@ -21,11 +21,7 @@ const login = asyncHandler(async (req, res) => {
     if (userExists && (await userExists.matchPassword(password))) {
         let user = {
             _id: userExists._id,
-            name: userExists.name,
-            email: userExists.email,
-            photo: userExists.photo,
-            phone: userExists.phone,
-            type: 'user'
+            role: userExists.role
         }
 
         let accessToken = await getAccessToken(user);
@@ -97,7 +93,7 @@ const logout = asyncHandler(async (req, res) => {
 */
 const registration = asyncHandler(async (req, res) => {
 
-    const { name, email, phone, address, password, photo } = req.body;
+    const { name, email, phone, address, password, photo, registeredFrom } = req.body;
     let activationId = uuid()
 
     let userRegistered = await Users.findOne({ $or: [{ email }, { phone }] });
@@ -110,7 +106,7 @@ const registration = asyncHandler(async (req, res) => {
     } else {
 
         let newUser = new Users({
-            name, email, phone, address, password, photo, activationId
+            name, email, phone, address, password, photo, activationId, registeredFrom
         });
 
         await newUser.save();
@@ -121,11 +117,7 @@ const registration = asyncHandler(async (req, res) => {
 
         user = {
             _id: user._id,
-            name: user.name,
-            email: user.email,
-            photo: user.photo,
-            phone: user.phone,
-            type: 'user',
+            role: user.role
         }
 
         let emailData = {
@@ -138,7 +130,7 @@ const registration = asyncHandler(async (req, res) => {
         process.env.NODE_ENV === 'production' ? emailSender(emailData) : null
 
         let accessToken = await getAccessToken(user);
-        let refreshToken = await getRefreshToken({ user: user._id })
+        let refreshToken = await getRefreshToken(user)
 
         res.cookie("accessToken", `Bearer ${accessToken}`, {
             httpOnly: true,
@@ -355,10 +347,7 @@ const renewTokens = asyncHandler(async (req, res) => {
 
     let user = {
         _id: userExist._id,
-        name: userExist.name,
-        email: userExist.email,
-        photo: userExist.photo,
-        type: 'user'
+        role: userExist.role
     }
 
     let redisToken = await client.get(id);

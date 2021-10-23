@@ -168,7 +168,7 @@ This route will make a user to be logged out. This api needs access `JWT` token 
 
 # Get Refresh Token
 
-This route will give a new `accessToken` and `refreshToken` while the `accessToken` gets expired. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+This route will give a new `accessToken` and `refreshToken` while the `accessToken` gets expired. This protected API needs `JWT` `accessToken` in header to do authorized task
 
 ---
 
@@ -192,7 +192,7 @@ This route will give a new `accessToken` and `refreshToken` while the `accessTok
 
 # Add To Cart
 
-This route will allow an authenticated user to add product to cart only. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+This route will allow an authenticated user to add product to cart only. This protected API needs `JWT` `accessToken` in header to do authorized task
 
 ---
 
@@ -216,7 +216,7 @@ This route will allow an authenticated user to add product to cart only. This ap
 
 # Update Cart
 
-This route will allow an authenticated user to update product to cart only. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+This route will allow an authenticated user to update product to cart only. This protected API needs `JWT` `accessToken` in header to do authorized task
 
 ---
 
@@ -240,7 +240,7 @@ This route will allow an authenticated user to update product to cart only. This
 
 # Get All Cart Products
 
-This route will allow an authenticated user to get all products cart only. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+This route will allow an authenticated user to get all products cart only. This protected API needs `JWT` `accessToken` in header to do authorized task
 
 ---
 
@@ -264,7 +264,7 @@ This route will allow an authenticated user to get all products cart only. This 
 
 # Delete Product From Cart
 
-This route will allow an authenticated user to remove products from cart only. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+This route will allow an authenticated user to remove products from cart only. This protected API needs `JWT` `accessToken` in header to do authorized task
 
 ---
 
@@ -288,7 +288,7 @@ This route will allow an authenticated user to remove products from cart only. T
 
 # Add Category
 
-This route will allow an authenticated vendor to add product categories. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+This route will allow an authenticated vendor to add product categories. This protected API needs `JWT` `accessToken` in header to do authorized task
 
 ---
 
@@ -312,7 +312,7 @@ This route will allow an authenticated vendor to add product categories. This ap
 
 # Update Category
 
-This route will allow an authenticated vendor to update product categories. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+This route will allow an authenticated vendor to update product categories. This protected API needs `JWT` `accessToken` in header to do authorized task
 
 ---
 
@@ -356,7 +356,7 @@ This route will allow all user to get product categories.
 
 # Set Shipping Address to order
 
-This route will allow an authenticated user to update the shipping address of the order. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+This route will allow an authenticated user to update the shipping address of the order. This protected API needs `JWT` `accessToken` in header to do authorized task
 
 ---
 
@@ -376,7 +376,7 @@ This route will allow an authenticated user to update the shipping address of th
 
 # Update Payment Status
 
-This route will allow an authenticated user to update the payment details of the order. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+This route will allow an authenticated user to update the payment details of the order. This protected API needs `JWT` `accessToken` in header to do authorized task
 
 ---
 
@@ -396,7 +396,7 @@ This route will allow an authenticated user to update the payment details of the
 
 # Update Shipping Status
 
-This route will allow an authenticated vendor to update the shipping status of the order. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+This route will allow an authenticated vendor to update the shipping status of the order. This protected API needs `JWT` `accessToken` in header to do authorized task
 
 ---
 
@@ -416,7 +416,7 @@ This route will allow an authenticated vendor to update the shipping status of t
 
 # Ask for refund
 
-This route will allow an authenticated user to ask for refund of a delivered product. This api needs `JWT` `refreshToken` token in the headers as `accesstoken (in headers)`.
+This route will allow an authenticated user to ask for refund of a delivered product. This protected API needs `JWT` `accessToken` in header to do authorized task
 
 ---
 
@@ -428,7 +428,107 @@ This route will allow an authenticated user to ask for refund of a delivered pro
 
 ---
 
-> A successful response will have an object containing order data along with `status`, `code` & `isSuccess` data as shown in example response.
+> A successful response will have an object containing order details data along with `status`, `code` & `isSuccess` data as shown in example response.
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Product Add
+
+This route will allow an authenticated vendor to add product. This protected API needs `JWT` `accessToken` in header to do authorized task
+
+---
+
+> Route: {{URL}}/products
+
+---
+
+> Method: POST
+
+---
+
+> A successful response will have an object containing product details data along with `status`, `code` & `isSuccess` data as shown in example response.
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Add Store
+
+This route will allow an authenticated vendor to add store details. This protected API needs `JWT` `accessToken` in header to do authorized task
+
+---
+
+> Route: {{URL}}/vendor/store
+
+---
+
+> Method: POST
+
+---
+
+> A successful response will have an object containing store details data along with `status`, `code` & `isSuccess` data as shown in example response.
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Get Store Details
+
+This route will allow an authenticated vendor to get store details. This protected API needs `JWT` `accessToken` in header to do authorized task
+
+---
+
+> Route: {{URL}}/vendor/store
+
+---
+
+> Method: GET
+
+---
+
+> A successful response will have an object containing store details data along with `status`, `code` & `isSuccess` data as shown in example response.
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Update Store Details
+
+This route will allow an authenticated vendor to get store details. This protected API needs `JWT` `accessToken` in header to do authorized task
+
+---
+
+> Route: {{URL}}/vendor/store
+
+---
+
+> Method: PUT
+
+---
+
+> A successful response will have an object containing store details data along with `status`, `code` & `isSuccess` data as shown in example response.
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Delete Store Details
+
+This route will allow an authenticated vendor to get store details. This protected API needs `JWT` `accessToken` in header to do authorized task
+
+---
+
+> Route: {{URL}}/vendor/store
+
+---
+
+> Method: DELETE
+
+---
+
+> A successful response will have `status`, `code` & `isSuccess` data as shown in example response.
 
 ---
 

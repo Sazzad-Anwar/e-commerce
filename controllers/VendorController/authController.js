@@ -22,6 +22,7 @@ const registration = asyncHandler(async (req, res) => {
         division,
         district,
         upaZila,
+        paymentAccount,
         ward,
         NID,
         password,
@@ -44,6 +45,7 @@ const registration = asyncHandler(async (req, res) => {
             shopAddress,
             division,
             district,
+            paymentAccount,
             upaZila,
             ward,
             NID,
@@ -58,10 +60,7 @@ const registration = asyncHandler(async (req, res) => {
 
         let user = {
             _id: vendor._id,
-            name,
-            email,
-            photo: image,
-            type: 'vendor'
+            role: vendor.role
         }
 
         let emailData = {
@@ -74,7 +73,7 @@ const registration = asyncHandler(async (req, res) => {
         process.env.NODE_ENV === 'production' ? emailSender(emailData) : null
 
         let accessToken = await getAccessToken(user);
-        let refreshToken = await getRefreshToken({ user: { _id: user._id.toString() } })
+        let refreshToken = await getRefreshToken(user)
 
         res.cookie("accessToken", `Bearer ${accessToken}`, {
             httpOnly: true,
@@ -124,10 +123,7 @@ const login = asyncHandler(async (req, res) => {
 
         let user = {
             _id: vendorExists._id,
-            name: vendorExists.name,
-            email: vendorExists.email,
-            photo: vendorExists.image,
-            type: 'vendor'
+            role: vendorExists.role
         }
 
         let accessToken = await getAccessToken(user);
@@ -198,7 +194,7 @@ const logout = asyncHandler(async (req, res) => {
 ##### Method: GET
 */
 const getVendorDetails = asyncHandler(async (req, res) => {
-    console.log(req.user._id);
+
     let vendorDetails = await Vendor.findOne({ _id: req.user._id }).select(' -password ');
 
     if (vendorDetails) {
@@ -233,6 +229,7 @@ const vendorDetailsUpdate = asyncHandler(async (req, res) => {
         shopAddress,
         division,
         district,
+        paymentAccount,
         upaZila,
         ward,
         NID,
@@ -255,6 +252,7 @@ const vendorDetailsUpdate = asyncHandler(async (req, res) => {
         vendor.NID = NID ?? vendor.NID;
         vendor.password = password ?? vendor.password;
         vendor.image = image ?? vendor.image;
+        vendor.paymentAccount = paymentAccount ?? vendor.paymentAccount
 
         await vendor.save()
 
@@ -284,6 +282,7 @@ const accountActivate = asyncHandler(async (req, res) => {
     if (activationInvalid) {
 
         activationInvalid.activationId = '';
+
         activationInvalid.isActive = true;
 
         await activationInvalid.save();
@@ -392,10 +391,7 @@ const renewTokens = asyncHandler(async (req, res) => {
 
     let user = {
         _id: userExist._id,
-        name: userExist.name,
-        email: userExist.email,
-        photo: userExist.image,
-        type: 'vendor'
+        role: userExist.role
     }
 
     let redisToken = await client.get(id);

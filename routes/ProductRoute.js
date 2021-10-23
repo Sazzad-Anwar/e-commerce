@@ -11,6 +11,7 @@ const {
     updateProduct,
     deleteProduct
 } = require('../controllers/ProductController/productController');
+const { hasPermission } = require('../middleware/checkUser');
 const router = express.Router();
 
 /*
@@ -22,7 +23,7 @@ const router = express.Router();
 router
     .route('/')
     .get(getProducts)
-    .post(AccessTokenValidation, addProduct)
+    .post(AccessTokenValidation, hasPermission(['superAdmin', 'admin']), addProduct)
 
 
 
@@ -35,8 +36,8 @@ router
 router
     .route('/:id')
     .get(getProduct)
-    .put(AccessTokenValidation, updateProduct)
-    .delete(AccessTokenValidation, deleteProduct)
+    .put(AccessTokenValidation, hasPermission(['superAdmin', 'admin']), updateProduct)
+    .delete(AccessTokenValidation, hasPermission(['superAdmin', 'admin']), deleteProduct)
 
 
 /*
@@ -58,7 +59,7 @@ router
 */
 router
     .route('/review/:id')
-    .get(AccessTokenValidation, getReview)
+    .get(AccessTokenValidation, hasPermission(['superAdmin', 'admin']), getReview)
     .put(AccessTokenValidation, updateReview)
 
 

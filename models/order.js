@@ -80,10 +80,7 @@ const orderSchema = new mongoose.Schema({
     isPaid: {
         type: Boolean,
         default: false,
-        tags: {
-            type: [String],
-            index: true
-        }
+        index: true
     },
     paidAt: {
         type: Date,
@@ -98,10 +95,7 @@ const orderSchema = new mongoose.Schema({
     addedToCart: {
         type: Boolean,
         default: true,
-        tags: {
-            type: [String],
-            index: true
-        }
+        index: true
     }
 }, {
     timestamps: true

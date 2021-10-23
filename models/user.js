@@ -5,36 +5,30 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Name is required'],
-        tags: {
-            type: [String],
-            index: true
-        }
+        index: true
     },
     email: {
         type: String,
         required: [true, 'Email is required'],
         unique: [true, 'This email is taken'],
-        tags: {
-            type: [String],
-            index: true
-        }
+        index: true
     },
     phone: {
         type: String,
+        match: /^(?:8801)\d{9}$/,
         required: [true, 'Phone number is required'],
         unique: [true, 'This phone number is taken'],
-        tags: {
-            type: [String],
-            index: true
-        }
+        index: true
     },
     address: {
         type: String,
-        required: [true, 'Address is required'],
     },
     password: {
         type: String,
         required: [true, 'Password is required'],
+        minlength: 8,
+        maxlength: 1024,
+        trim: true
     },
     photo: {
         type: String,
@@ -42,12 +36,23 @@ const userSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: false,
+        index: true
     },
     activationId: {
         type: String
     },
     passwordResetId: {
         type: String
+    },
+    registeredFrom: {
+        type: String,
+        enum: ['android', 'ios', 'web', 'facebook', 'instagram'],
+        required: true,
+        index: true
+    },
+    role: {
+        type: String,
+        default: 'user'
     }
 }, {
     timestamps: true

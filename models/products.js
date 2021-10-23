@@ -9,27 +9,20 @@ const productSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        tags: { type: [String], index: true }
+        index: true,
     },
-    campaign: {
-        status: { type: Boolean, default: false },
-        campaignName: { type: String },
-        discount: { type: Number, default: 0.00 },
-        banners: [
-            { src: { type: String } }
-        ]
-    },
-    category: { type: String, required: true },
-    subCategory: { type: String },
-    item: { type: String, required: true },
-    location: {
-        type: String,
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        unique: true,
-        tags: { type: [String], index: true }
+        ref: 'Category'
+    },
+    store: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Store',
+        required: true
     },
     seo: {
-        metaTag: { type: String },
+        title: { type: String },
         description: { type: String },
     },
     variant: [{
@@ -46,10 +39,14 @@ const productSchema = new mongoose.Schema({
         inStock: { type: Boolean, required: true, default: true },
         purchasePrice: { type: Number, required: true, default: 0.00 }
     }],
+    thumbImage: {
+        type: String,
+        required: true,
+    },
     brand: {
         type: String,
         required: true,
-        tags: { type: [String], index: true }
+        index: true,
     },
     shippingCharge: {
         type: Number,

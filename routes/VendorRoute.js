@@ -12,6 +12,8 @@ const {
     logout,
     renewTokens
 } = require('../controllers/VendorController/authController');
+const { addStore, getStore, updateStoreDetails, deleteStore } = require('../controllers/VendorController/store');
+const { hasPermission } = require('../middleware/checkUser');
 const router = express.Router();
 
 /*
@@ -48,8 +50,8 @@ router
 //Method: GET, PUT
 router
     .route('/details')
-    .get(AccessTokenValidation, getVendorDetails)
-    .put(AccessTokenValidation, vendorDetailsUpdate)
+    .get(AccessTokenValidation, hasPermission(['superAdmin', 'admin']), getVendorDetails)
+    .put(AccessTokenValidation, hasPermission(['superAdmin', 'admin']), vendorDetailsUpdate)
 
 
 /*
@@ -80,5 +82,19 @@ router
 router
     .route('/refresh-token')
     .post(RefreshTokenValidation, renewTokens)
+
+
+/*
+##### @Description: Add/Update/delete/Get stores
+##### Route: /api/v1/vendor/store
+##### Method: GET/POST/PUT/DELETE
+##### Access: admin, superAdmin
+*/
+router
+    .route('/store')
+    .get(AccessTokenValidation, hasPermission(['admin', 'superAdmin']), getStore)
+    .post(AccessTokenValidation, hasPermission(['admin', 'superAdmin']), addStore)
+    .put(AccessTokenValidation, hasPermission(['admin', 'superAdmin']), updateStoreDetails)
+    .delete(AccessTokenValidation, hasPermission(['admin', 'superAdmin']), deleteStore)
 
 module.exports = router;

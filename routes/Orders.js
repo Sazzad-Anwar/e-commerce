@@ -3,6 +3,7 @@ const { AccessTokenValidation } = require('auth-middleware-jwt');
 const { cart, deleteCart } = require('../controllers/Orders/cart');
 const { payment, refundOrder } = require('../controllers/Orders/payment');
 const { addShippingAddress, shippingStatus } = require('../controllers/Orders/shipping');
+const { hasPermission } = require('../middleware/checkUser');
 
 
 /*
@@ -13,9 +14,9 @@ const { addShippingAddress, shippingStatus } = require('../controllers/Orders/sh
 */
 router
     .route('/cart')
-    .get(AccessTokenValidation, cart)
-    .post(AccessTokenValidation, cart)
-    .put(AccessTokenValidation, cart)
+    .get(AccessTokenValidation, hasPermission(['user']), cart)
+    .post(AccessTokenValidation, hasPermission(['user']), cart)
+    .put(AccessTokenValidation, hasPermission(['user']), cart)
 
 
 /*
@@ -26,7 +27,7 @@ router
 */
 router
     .route('/cart/:id')
-    .delete(AccessTokenValidation, deleteCart);
+    .delete(AccessTokenValidation, hasPermission(['user']), deleteCart);
 
 
 /*
@@ -37,7 +38,7 @@ router
 */
 router
     .route('/addShippingAddress/:orderId')
-    .put(AccessTokenValidation, addShippingAddress)
+    .put(AccessTokenValidation, hasPermission(['user']), addShippingAddress)
 
 /*
 ##### @Description: Proceed to payment
@@ -47,7 +48,7 @@ router
 */
 router
     .route('/:orderId/payment')
-    .put(AccessTokenValidation, payment)
+    .put(AccessTokenValidation, hasPermission(['user']), payment)
 
 
 
@@ -59,7 +60,7 @@ router
 */
 router
     .route('/updateShippingStatus/:orderId')
-    .put(AccessTokenValidation, shippingStatus)
+    .put(AccessTokenValidation, hasPermission(['admin', 'superAdmin']), shippingStatus)
 
 
 
@@ -71,7 +72,7 @@ router
 */
 router
     .route('/:orderId/refund')
-    .put(AccessTokenValidation, refundOrder)
+    .put(AccessTokenValidation, hasPermission(['user']), refundOrder)
 
 
 module.exports = router;

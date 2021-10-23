@@ -21,9 +21,8 @@ const addProduct = asyncHandler(async (req, res) => {
         image,
         brand,
         seo,
+        thumbImage,
         category,
-        subCategory,
-        item,
         description,
         specification,
         shippingCharge,
@@ -39,9 +38,8 @@ const addProduct = asyncHandler(async (req, res) => {
         variant,
         image,
         brand,
+        thumbImage,
         category,
-        subCategory,
-        item,
         seo,
         description,
         specification,
@@ -330,13 +328,19 @@ const updateReview = asyncHandler(async (req, res) => {
 */
 const getProduct = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    let product = await Products.findById(id).populate({
-        path: "reviews",
-        populate: {
-            path: 'user',
-            select: "name photo"
+    let product = await Products.findById(id).populate([
+        {
+            path: "reviews",
+            populate: {
+                path: 'user',
+                select: "name photo"
+            }
+        },
+        {
+            path: 'category',
+            populate: 'category subCategory'
         }
-    });
+    ]);
 
     if (product) {
         res.json({
@@ -375,9 +379,8 @@ const updateProduct = asyncHandler(async (req, res) => {
         image,
         brand,
         seo,
+        thumbImage,
         category,
-        subCategory,
-        item,
         description,
         specification,
     } = req.body
@@ -393,10 +396,9 @@ const updateProduct = asyncHandler(async (req, res) => {
         product.image = image ?? product.image;
         product.brand = brand ?? product.brand;
         product.category = category ?? product.category;
-        product.subCategory = subCategory ?? product.subCategory;
-        product.item = item ?? product.item;
         product.description = description ?? product.description;
         product.specification = specification ?? product.specification;
+        product.thumbImage = thumbImage ?? product.thumbImage;
         product.seo = seo ?? product.seo;
 
         let productUpdated = await product.save();

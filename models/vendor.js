@@ -5,46 +5,32 @@ const vendorSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Name is required'],
-        tags: {
-            type: [String],
-            index: true
-        }
+        index: true
     },
     shopName: {
         type: String,
         required: [true, 'Shop Name is required'],
-        tags: {
-            type: [String],
-            index: true
-        }
+        index: true
     },
+    store: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Store', index: true }
+    ],
     email: {
         type: String,
         required: [true, 'Email is required'],
         unique: [true, 'This email is taken'],
-        tags: {
-            type: [String],
-            index: true
-        }
+        index: true
     },
     phone: {
         type: String,
         required: [true, 'Phone number is required'],
         unique: [true, 'This phone number is taken'],
-        tags: {
-            type: [String],
-            index: true
-        }
-    },
-    shopAddress: {
-        type: String,
-        required: [true, 'Address is required'],
+        index: true
     },
     division: {
         type: String,
         required: [true, 'division is required'],
     },
-
     district: {
         type: String,
         required: [true, 'District is required']
@@ -62,14 +48,14 @@ const vendorSchema = new mongoose.Schema({
     NID: {
         type: String,
         required: [true, 'NId is required'],
-        tags: {
-            type: [String],
-            index: true
-        }
+        index: true,
+        minlength: 7,
+        maxlength: 13
     },
     password: {
         type: String,
         required: [true, 'Password is required'],
+        minlength: 8
     },
     image: {
         type: String,
@@ -87,6 +73,35 @@ const vendorSchema = new mongoose.Schema({
     },
     passwordResetId: {
         type: String
+    },
+    commission: {
+        type: Number,
+        default: 0,
+    },
+    paymentAccount: [
+        {
+            accountType: {
+                type: String,
+                enum: ['bkash', 'nagad', 'rocket', 'upay', 'bank-account'],
+                required: true,
+            },
+            bankName: {
+                type: String,
+            },
+            accountName: {
+                type: String,
+                required: true
+            },
+            accountNumber: {
+                type: String,
+                required: true
+            }
+        }
+    ],
+    role: {
+        type: String,
+        enum: ['superAdmin', 'admin'],
+        default: 'admin'
     }
 }, {
     timestamps: true

@@ -9,77 +9,27 @@ const asyncHandler = require('express-async-handler')
 ##### Method: POST
 */
 const createCategory = asyncHandler(async (req, res) => {
-    const { category, subCategory, item } = req.body;
+    const { category, subCategory } = req.body;
 
-    let categoryExists = await Category.findOne({ category: category.toLowerCase() });
+    let categoryExists = await Category.findOne({ category, subCategory });
 
     if (categoryExists) {
 
-        if (categoryExists.subCategory.includes(subCategory.toLowerCase()) && categoryExists.item.includes(item.toLowerCase())) {
-            res.status(409).json({
-                code: 409,
-                isSuccess: false,
-                status: 'failed',
-                message: 'Category already exists'
-            });
-        }
+        res.status(409).json({
+            code: 409,
+            isSuccess: false,
+            status: 'failed',
+            message: 'Category already exists',
+            data: {
+                category: categoryExists
+            }
+        })
 
-        else if (categoryExists.subCategory.includes(subCategory.toLowerCase()) && !categoryExists.item.includes(item.toLowerCase())) {
-
-            categoryExists.item.push(item.toLowerCase());
-            let updatedCategory = await categoryExists.save()
-
-            res.status(201).json({
-                code: 201,
-                isSuccess: true,
-                status: 'success',
-                data: {
-                    category: updatedCategory
-                }
-            })
-        }
-        else if (!categoryExists.subCategory.includes(subCategory.toLowerCase())) {
-
-            categoryExists.subCategory.push(subCategory.toLowerCase());
-            let updatedCategory = await categoryExists.save()
-
-            res.status(201).json({
-                code: 201,
-                isSuccess: true,
-                status: 'success',
-                data: {
-                    category: updatedCategory
-                }
-            })
-        }
-
-        else if (!categoryExists.subCategory.includes(subCategory.toLowerCase()) && !categoryExists.item.includes(item.toLowerCase())) {
-
-            categoryExists.subCategory.push(subCategory.toLowerCase());
-            categoryExists.item.push(item.toLowerCase());
-            let updatedCategory = await categoryExists.save()
-
-            res.status(201).json({
-                code: 201,
-                isSuccess: true,
-                status: 'success',
-                data: {
-                    category: updatedCategory
-                }
-            })
-        }
-
-    }
-
-    if (!categoryExists) {
-
+    } else {
         let newCategory = new Category({
-            category: category.toLowerCase(),
+            category,
+            subCategory
         });
-
-        newCategory.subCategory.push(subCategory.toLowerCase());
-
-        newCategory.item.push(item.toLowerCase());
 
         let categoryAdded = await newCategory.save();
 
@@ -103,20 +53,6 @@ const createCategory = asyncHandler(async (req, res) => {
 */
 const getCategories = asyncHandler(async (req, res) => {
 
-    const subCategory = req.query.subCategory ? {
-        subCategory: {
-            $regex: req.query.subCategory,
-            $options: 'i'
-        }
-    } : {}
-
-    const item = req.query.item ? {
-        item: {
-            $regex: req.query.item,
-            $options: 'i'
-        }
-    } : {}
-
     const category = req.query.category ? {
         category: {
             $regex: req.query.category,
@@ -124,8 +60,7 @@ const getCategories = asyncHandler(async (req, res) => {
         }
     } : {}
 
-
-    let categories = await Category.find({ ...category, ...item, ...subCategory });
+    let categories = await Category.find({ ...category })
 
     if (categories.length) {
         res.json({
@@ -150,76 +85,31 @@ const getCategories = asyncHandler(async (req, res) => {
 
 /*
 ##### @Description: Update category
-##### Route: /api/v1/category
+##### Route: /api/v1/category/:id/updated
 ##### Method: PUT
 */
 const updateCategory = asyncHandler(async (req, res) => {
 
-    const { categoryID, subCategory, item } = req.body;
+    const { category, subCategory } = req.body;
 
-    let categoryExists = await Category.findById(categoryID);
+    let categoryExists = await Category.findById(req.params.id);
 
     if (categoryExists) {
 
-        if (categoryExists.subCategory.includes(subCategory?.toLowerCase()) && categoryExists.item.includes(item?.toLowerCase())) {
+        categoryExists.category = category ?? categoryExists.category;
 
-            categoryExists.item = categoryExists.item.filter(categoryItem => categoryItem !== item.toLowerCase());
-            categoryExists.subCategory = categoryExists.subCategory.filter(subCategoryItem => subCategoryItem !== subCategory.toLowerCase());
+        categoryExists.subCategory = subCategory ?? categoryExists.subCategory;
 
-            let updatedCategory = await categoryExists.save();
+        let categoryUpdated = await categoryExists.save()
 
-            res.json({
-                code: 200,
-                status: 'success',
-                isSuccess: true,
-                data: {
-                    category: updatedCategory
-                }
-            })
-
-        } else if (categoryExists.subCategory.includes((subCategory?.toLowerCase())) && !item) {
-
-            categoryExists.subCategory = categoryExists.subCategory.filter(subCategoryItem => subCategoryItem !== subCategory.toLowerCase());
-
-            let updatedCategory = await categoryExists.save();
-
-            res.json({
-                code: 200,
-                status: 'success',
-                isSuccess: true,
-                data: {
-                    category: updatedCategory
-                }
-            })
-
-        } else if (categoryExists.item.includes((item?.toLowerCase())) && !subCategory) {
-
-            categoryExists.item = categoryExists.item.filter(categoryItem => categoryItem !== item.toLowerCase());
-
-            let updatedCategory = await categoryExists.save();
-
-            res.json({
-                code: 200,
-                status: 'success',
-                isSuccess: true,
-                data: {
-                    category: updatedCategory
-                }
-            })
-        }
-        else if (categoryID && !subCategory && !item) {
-
-            Category.findByIdAndDelete(categoryID).then(() => {
-
-                res.json({
-                    code: 200,
-                    status: 'success',
-                    isSuccess: true,
-                    message: 'Category is deleted'
-                })
-
-            })
-        }
+        res.json({
+            code: 200,
+            status: 'success',
+            isSuccess: true,
+            data: {
+                category: categoryUpdated
+            }
+        })
 
     } else {
         res.status(404).json({
@@ -229,12 +119,30 @@ const updateCategory = asyncHandler(async (req, res) => {
             message: 'Category is not found'
         })
     }
-
 });
 
+
+/*
+##### @Description: Delete category
+##### Route: /api/v1/category/:id/delete
+##### Method: DELETE
+*/
+const deleteCategory = asyncHandler(async (req, res) => {
+
+    Category.findByIdAndDelete(req.params.id).then(() => {
+        res.json({
+            code: 200,
+            status: 'success',
+            isSuccess: true,
+            message: `Category ID ${req.params.id} is deleted`
+        })
+    })
+
+});
 
 module.exports = {
     createCategory,
     getCategories,
-    updateCategory
+    updateCategory,
+    deleteCategory
 }

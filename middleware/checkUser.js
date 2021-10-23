@@ -1,18 +1,11 @@
-exports.vendorAccess = (req, res, next) => {
-    if (req.user.type === 'vendor') {
-        next()
-    } else {
-        res.status(403)
-        throw new Error('You are not allowed !')
+exports.hasPermission = (role) => {
+    return (req, res, next) => {
+        if (role.includes(req.user.role)) {
+            next()
+        } else {
+            res.status(403)
+            throw new Error(`Only ${role} can access this route`)
+        }
     }
-}
 
-exports.userAccess = (req, res, next) => {
-    if (req.user.type === 'user') {
-        next()
-    } else {
-        res.status(403)
-        throw new Error('You are not allowed !')
-    }
 }
-
