@@ -12,6 +12,7 @@ const {
     logout,
     renewTokens
 } = require('../controllers/VendorController/authController');
+const { addCampaign, updateCampaign, getCampaign, deleteCampaign } = require('../controllers/VendorController/campaign');
 const { addStore, getStore, updateStoreDetails, deleteStore } = require('../controllers/VendorController/store');
 const { hasPermission } = require('../middleware/checkUser');
 const router = express.Router();
@@ -95,6 +96,21 @@ router
     .get(AccessTokenValidation, hasPermission(['admin', 'superAdmin']), getStore)
     .post(AccessTokenValidation, hasPermission(['admin', 'superAdmin']), addStore)
     .put(AccessTokenValidation, hasPermission(['admin', 'superAdmin']), updateStoreDetails)
-    .delete(AccessTokenValidation, hasPermission(['admin', 'superAdmin']), deleteStore)
+    .delete(AccessTokenValidation, hasPermission(['admin', 'superAdmin']), deleteStore);
+
+
+/*
+##### @Description: Add/update/get/delete campaign
+##### Route: /api/v1/vendor/campaign?_id=
+##### Method: GET/POST/PUT/DELETE
+##### Access: superAdmin
+*/
+router
+    .route('/campaign')
+    .get(AccessTokenValidation, hasPermission(['superAdmin']), getCampaign)
+    .post(AccessTokenValidation, hasPermission(['superAdmin']), addCampaign)
+    .put(AccessTokenValidation, hasPermission(['superAdmin']), updateCampaign)
+    .delete(AccessTokenValidation, hasPermission(['superAdmin']), deleteCampaign);
+
 
 module.exports = router;

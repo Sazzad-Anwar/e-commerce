@@ -533,3 +533,23 @@ This route will allow an authenticated vendor to get store details. This protect
 ---
 
 > A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response
+
+# Get Campaign
+
+This route will allow an authenticated vendor to get campaign details. This protected API needs `JWT` `accessToken` in header to do authorized task
+
+---
+
+> Route: {{URL}}/vendor/campaign
+
+---
+
+> Method: GET
+
+---
+
+> A successful response will have campaign data along with `status`, `code` & `isSuccess` data as shown in example response.
+
+---
+
+> A failed response will have failing `message` along with `status`, `code` & `isSuccess` data as shown in example response

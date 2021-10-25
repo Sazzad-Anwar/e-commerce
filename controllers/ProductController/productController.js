@@ -21,6 +21,7 @@ const addProduct = asyncHandler(async (req, res) => {
         image,
         brand,
         seo,
+        store,
         thumbImage,
         category,
         description,
@@ -41,6 +42,7 @@ const addProduct = asyncHandler(async (req, res) => {
         thumbImage,
         category,
         seo,
+        store,
         description,
         specification,
         shippingCharge,
@@ -379,6 +381,7 @@ const updateProduct = asyncHandler(async (req, res) => {
         image,
         brand,
         seo,
+        store,
         thumbImage,
         category,
         description,
@@ -394,6 +397,7 @@ const updateProduct = asyncHandler(async (req, res) => {
         product.campaign = campaign ?? product.campaign;
         product.variant = variant ?? product.variant;
         product.image = image ?? product.image;
+        product.store = store ?? product.store;
         product.brand = brand ?? product.brand;
         product.category = category ?? product.category;
         product.description = description ?? product.description;

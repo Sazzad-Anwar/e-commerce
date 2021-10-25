@@ -73,7 +73,7 @@ const campaignSchema = new mongoose.Schema({
     ],
     sales: {
         type: Number,
-        required: true
+        default: 0
     }
 }, {
     timestamps: true

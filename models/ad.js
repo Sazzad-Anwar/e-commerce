@@ -12,7 +12,8 @@ const adSchema = new mongoose.Schema({
     image: {
         type: String,
         required: true
-    }
+    },
+    status: { type: Boolean, required: true }
 }, {
     timestamps: true
 });
