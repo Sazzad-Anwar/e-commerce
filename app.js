@@ -47,6 +47,8 @@ app.use('/api/v1/category', require('./routes/Category'));
 app.use('/api/v1/products', require('./routes/ProductRoute'));
 app.use('/api/v1/orders', require('./routes/Orders'));
 app.use('/api/v1/advertise', require('./routes/advertiseRoute'));
+app.use('/api/v1/site-settings', require('./routes/siteSettings'));
+app.use('/api/v1/pos', require('./routes/pos'));
 app.get('/api/v1/checkStatus', (req, res) => res.json({ status: 'Ok updated', host: req.hostname }));
 
 // app.get('/admin/*', (req, res) => {

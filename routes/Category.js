@@ -29,12 +29,12 @@ router
 
 /*
 ##### @Description: Delete category route
-##### Route: /api/v1/category/:id/delete
+##### Route: /api/v1/category/:id/:parent/delete
 ##### Method: DELETE
 ##### Access: Vendor
 */
 router
-    .route('/:id/delete')
+    .route('/:id/:parent/delete')
     .delete(AccessTokenValidation, hasPermission(['superAdmin', 'admin']), deleteCategory)
 
 

@@ -13,42 +13,8 @@ client.get = util.promisify(client.get);
 ##### Method: POST
 */
 const addProduct = asyncHandler(async (req, res) => {
-    const {
-        vendor,
-        name,
-        campaign,
-        variant,
-        image,
-        brand,
-        seo,
-        store,
-        thumbImage,
-        category,
-        description,
-        specification,
-        shippingCharge,
-        serviceCharge,
-        location,
-    } = req.body;
 
-
-    let newProduct = new Products({
-        vendor,
-        name,
-        campaign,
-        variant,
-        image,
-        brand,
-        thumbImage,
-        category,
-        seo,
-        store,
-        description,
-        specification,
-        shippingCharge,
-        serviceCharge,
-        location
-    });
+    let newProduct = new Products(req.body);
 
 
     let product = await newProduct.save();
@@ -374,38 +340,14 @@ const getProduct = asyncHandler(async (req, res) => {
 ##### Access: Vendor
 */
 const updateProduct = asyncHandler(async (req, res) => {
-    const {
-        name,
-        campaign,
-        variant,
-        image,
-        brand,
-        seo,
-        store,
-        thumbImage,
-        category,
-        description,
-        specification,
-    } = req.body
 
     const { id } = req.params;
 
     let product = await Products.findOne({ vendor: req.user._id, _id: id })
 
     if (product) {
-        product.name = name ?? product.name;
-        product.campaign = campaign ?? product.campaign;
-        product.variant = variant ?? product.variant;
-        product.image = image ?? product.image;
-        product.store = store ?? product.store;
-        product.brand = brand ?? product.brand;
-        product.category = category ?? product.category;
-        product.description = description ?? product.description;
-        product.specification = specification ?? product.specification;
-        product.thumbImage = thumbImage ?? product.thumbImage;
-        product.seo = seo ?? product.seo;
 
-        let productUpdated = await product.save();
+        let productUpdated = await updateData(req.body, product);
 
         res.json({
             code: 200,

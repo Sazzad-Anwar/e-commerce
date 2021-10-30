@@ -1,5 +1,6 @@
 const Category = require('../../models/productCategory');
-const asyncHandler = require('express-async-handler')
+const asyncHandler = require('express-async-handler');
+const updateDataModel = require('../../libs/updateDataModel');
 
 
 
@@ -9,39 +10,61 @@ const asyncHandler = require('express-async-handler')
 ##### Method: POST
 */
 const createCategory = asyncHandler(async (req, res) => {
-    const { category, subCategory } = req.body;
+    const { title, parent } = req.body;
 
-    let categoryExists = await Category.findOne({ category, subCategory });
+    let categoryExist = await Category.findOne({ title });
 
-    if (categoryExists) {
-
+    if (categoryExist) {
         res.status(409).json({
             code: 409,
-            isSuccess: false,
             status: 'failed',
-            message: 'Category already exists',
-            data: {
-                category: categoryExists
-            }
-        })
-
-    } else {
-        let newCategory = new Category({
-            category,
-            subCategory
+            isSuccess: false,
+            message: `Category ${title} already exists`
         });
+    } else {
 
-        let categoryAdded = await newCategory.save();
+        let parentExists = await Category.findById(parent);
 
-        res.status(201).json({
-            code: 201,
-            isSuccess: true,
-            status: 'success',
-            data: {
-                category: categoryAdded
-            }
-        })
+        if (parentExists) {
+
+            let newCategory = new Category({
+                title
+            });
+
+            let category = await newCategory.save();
+
+            parentExists.children.push(category);
+
+            await parentExists.save();
+
+            res.status(201).json({
+                code: 201,
+                status: 'success',
+                isSuccess: true,
+                data: {
+                    category
+                }
+            })
+        } else {
+
+            let newCategory = new Category({
+                title
+            });
+
+            let category = await newCategory.save();
+
+            res.status(201).json({
+                code: 201,
+                status: 'success',
+                isSuccess: true,
+                data: {
+                    category
+                }
+            })
+        }
+
     }
+
 });
 
 
@@ -53,32 +76,65 @@ const createCategory = asyncHandler(async (req, res) => {
 */
 const getCategories = asyncHandler(async (req, res) => {
 
-    const category = req.query.category ? {
-        category: {
-            $regex: req.query.category,
-            $options: 'i'
-        }
-    } : {}
+    if (req.query.category) {
 
-    let categories = await Category.find({ ...category })
+        const category = req.query.category ? {
+            title: {
+                $regex: req.query.category,
+                $options: 'i'
+            }
+        } : {}
 
-    if (categories.length) {
-        res.json({
-            code: 200,
-            isSuccess: true,
-            status: 'success',
-            data: {
-                categories
+        let categories = await Category.find({ ...category }).populate({
+            path: 'children',
+            populate: {
+                path: 'children',
+                populate: {
+                    path: 'children'
+                }
             }
         })
+
+        if (categories.length) {
+            res.json({
+                code: 200,
+                isSuccess: true,
+                status: 'success',
+                data: {
+                    categories
+                }
+            })
+        } else {
+            res.status(404).json({
+                code: 404,
+                isSuccess: false,
+                status: 'failed',
+                message: 'Categories not found !'
+            })
+        }
     } else {
-        res.status(404).json({
-            code: 404,
-            isSuccess: false,
-            status: 'failed',
-            message: 'Categories not found !'
+
+        let category = await Category.find().populate({
+            path: 'children',
+            populate: {
+                path: 'children',
+                populate: {
+                    path: 'children'
+                }
+            }
+        });
+
+        res.json({
+            code: 200,
+            status: 'success',
+            isSuccess: true,
+            data: {
+                category
+            }
         })
+
     }
+
 });
 
 
@@ -90,17 +146,11 @@ const getCategories = asyncHandler(async (req, res) => {
 */
 const updateCategory = asyncHandler(async (req, res) => {
 
-    const { category, subCategory } = req.body;
-
     let categoryExists = await Category.findById(req.params.id);
 
     if (categoryExists) {
 
-        categoryExists.category = category ?? categoryExists.category;
-
-        categoryExists.subCategory = subCategory ?? categoryExists.subCategory;
-
-        let categoryUpdated = await categoryExists.save()
+        let categoryUpdated = await updateDataModel(req.body, categoryExists)
 
         res.json({
             code: 200,
@@ -124,10 +174,16 @@ const updateCategory = asyncHandler(async (req, res) => {
 
 /*
 ##### @Description: Delete category
-##### Route: /api/v1/category/:id/delete
+##### Route: /api/v1/category/:id/:parent/delete
 ##### Method: DELETE
 */
 const deleteCategory = asyncHandler(async (req, res) => {
+
+    let parent = await Category.findById(req.params.parent);
+
+    parent.children = parent.children.filter(item => item.toString() !== req.params.id);
+
+    await parent.save();
 
     Category.findByIdAndDelete(req.params.id).then(() => {
         res.json({

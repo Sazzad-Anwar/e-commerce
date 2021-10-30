@@ -35,7 +35,6 @@ const siteSettingSchema = new mongoose.Schema({
         {
             title: {
                 type: String,
-                required: true
             },
             description: {
                 type: String,
@@ -47,7 +46,6 @@ const siteSettingSchema = new mongoose.Schema({
         {
             title: {
                 type: String,
-                required: true
             },
             description: {
                 type: String,

@@ -1,6 +1,7 @@
 const Order = require('../../models/order');
 const asyncHandler = require('express-async-handler');
 const Products = require('../../models/products');
+const Campaign = require('../../models/campaign');
 
 /*
 ##### @Description: Add, update a product to cart and get all product of that user. for pagination I have used the keyset 
@@ -10,196 +11,184 @@ const Products = require('../../models/products');
 */
 const cart = asyncHandler(async (req, res) => {
 
-    if (req.user.type === 'user') {
 
-        let { limit, lastId, pastOrder, currentOrder } = req.query;
+    let { limit, lastId, pastOrder, currentOrder } = req.query;
 
-        if (req.method === 'GET') {
+    if (req.method === 'GET') {
 
-            let cart;
+        let cart;
 
-            //setting up the way of paginated data in fasted response using keyset pagination
+        //setting up the way of paginated data in fasted response using keyset pagination
 
-            if (!lastId || lastId === undefined) {
+        if (!lastId || lastId === undefined) {
 
-                cart = await Order
-                    .find({ user: req.user._id })
-                    .sort({
-                        _id: -1
-                    })
-                    .limit(limit ? parseInt(limit) : 0)
-                    .populate({
-                        path: 'orderItem',
-                        populate: [
-                            {
-                                path: 'vendor',
-                                select: "shopName"
-                            },
-                            {
-                                path: 'product',
-                                select: 'category name',
-                                populate: {
-                                    path: 'category',
-                                    select: 'category subCategory item'
-                                }
-                            }
-                        ]
-                    });
-            }
-
-
-            if (limit && lastId) {
-
-                cart = await Order
-                    .find({
-                        $and: [
-                            { user: req.user._id },
-                            { _id: { $lt: lastId } }
-                        ]
-                    })
-                    .sort({
-                        _id: -1
-                    })
-                    .limit(limit ? parseInt(limit) : 50)
-                    .populate({
-                        path: 'orderItem',
-                        populate: [
-                            {
-                                path: 'vendor',
-                                select: "shopName"
-                            },
-                            {
-                                path: 'product',
-                                select: 'category name',
-                                populate: {
-                                    path: 'category',
-                                    select: 'category subCategory item'
-                                }
-                            }
-                        ]
-                    });
-            }
-
-            if (cart.length) {
-
-                res.status(200).json({
-                    code: 200,
-                    isSuccess: true,
-                    status: 'success',
-                    data: {
-                        length: cart.length,
-                        lastId: cart[cart.length - 1]._id,
-                        cart: cart,
-                    }
+            cart = await Order
+                .find({ user: req.user._id })
+                .sort({
+                    _id: -1
                 })
-
-            } else {
-
-                res.status(404).json({
-                    code: 404,
-                    isSuccess: false,
-                    status: 'failed',
-                    message: 'No order found'
-                })
-            }
+                .limit(limit ? parseInt(limit) : 0)
+                .populate({
+                    path: 'orderItem',
+                    populate: [
+                        {
+                            path: 'vendor',
+                            select: "shopName"
+                        },
+                        {
+                            path: 'product',
+                            select: 'category name',
+                            populate: {
+                                path: 'category',
+                                select: 'category subCategory item'
+                            }
+                        }
+                    ]
+                });
         }
 
 
-        if (req.method === 'POST') {
+        if (limit && lastId) {
 
-            const { product } = req.body;
+            cart = await Order
+                .find({
+                    $and: [
+                        { user: req.user._id },
+                        { _id: { $lt: lastId } }
+                    ]
+                })
+                .sort({
+                    _id: -1
+                })
+                .limit(limit ? parseInt(limit) : 50)
+                .populate({
+                    path: 'orderItem',
+                    populate: [
+                        {
+                            path: 'vendor',
+                            select: "shopName"
+                        },
+                        {
+                            path: 'product',
+                            select: 'category name',
+                            populate: {
+                                path: 'category',
+                                select: 'category subCategory item'
+                            }
+                        }
+                    ]
+                });
+        }
 
-            let orderItem = {};
-            let user = req.user;
+        if (cart.length) {
 
-            let cartProduct = await Products.findById(product._id);
+            res.status(200).json({
+                code: 200,
+                isSuccess: true,
+                status: 'success',
+                data: {
+                    length: cart.length,
+                    lastId: cart[cart.length - 1]._id,
+                    cart: cart,
+                }
+            })
+
+        } else {
+
+            res.status(200).json({
+                code: 200,
+                isSuccess: true,
+                status: 'success',
+                message: 'No order found'
+            })
+        }
+    }
+
+
+    if (req.method === 'POST') {
+
+        const { product } = req.body;
+
+        let orderItem = {};
+
+        let cartProduct = await Products.findById(product._id);
+        let campaign = await Campaign.findOne({ product: product._id, status: true });
+        let variant = cartProduct?.variant?.filter(productVariant => productVariant._id.toString() === product.variantId);
+        orderItem.qty = product.quantity;
+        orderItem.price = variant[0].price;
+        orderItem.product = product._id;
+        orderItem.variantId = variant[0]._id;
+        orderItem.color = variant[0]?.color;
+        orderItem.size = variant[0]?.size;
+        orderItem.image = variant[0]?.image[0];
+        orderItem.vendor = cartProduct.vendor;
+
+        let totalPrice = ((orderItem.qty * orderItem.price) - (campaign ? campaign.discountPrice * orderItem.qty : 0)) + cartProduct?.serviceCharge + cartProduct?.shippingCharge;
+
+        let newCart = new Order({
+            user: req.user._id,
+            orderItem,
+            totalPrice,
+            discount: campaign ? campaign.discountPrice * orderItem.qty : 0,
+            addedToCart: true,
+            discountPrice: ((orderItem.qty * orderItem.price) - (campaign ? campaign.discountPrice * orderItem.qty : 0)),
+            serviceCharge: cartProduct?.serviceCharge,
+            shippingCharge: cartProduct?.shippingCharge
+        });
+
+        let cart = await newCart.save();
+
+        res.json({
+            code: 200,
+            isSuccess: true,
+            status: 'success',
+            data: {
+                cart
+            }
+        });
+    }
+
+    if (req.method === 'PUT') {
+
+        let { orderId, product } = req.body;
+
+        let order = await Order.findOne({ _id: orderId, user: req.user._id });
+
+        let cartProduct = await Products.findById(product._id);
+
+        if (order && cartProduct) {
+
             let variant = cartProduct?.variant?.filter(productVariant => productVariant._id.toString() === product.variantId);
-            orderItem.qty = product.quantity;
-            orderItem.price = variant[0].price;
-            orderItem.product = product._id;
-            orderItem.variantId = variant[0]._id;
-            orderItem.color = variant[0]?.color;
-            orderItem.size = variant[0]?.size;
-            orderItem.image = variant[0]?.image;
-            orderItem.vendor = cartProduct.vendor;
+            order.orderItem.qty = product.quantity;
+            order.orderItem.price = variant[0].price;
+            order.orderItem.color = variant[0].color;
+            order.orderItem.size = variant[0].size;
+            order.orderItem.image = variant[0].image
+            order.totalPrice = ((product.quantity * variant[0].price) - ((product.quantity * variant[0].price) * cartProduct.campaign.discount)) + cartProduct?.serviceCharge + cartProduct?.shippingCharge;
+            order.shippingCharge = cartProduct.shippingCharge;
+            order.serviceCharge = cartProduct.serviceCharge;
+            order.discount = cartProduct.campaign.discount;
+            order.discountPrice = ((product.quantity * variant[0].price) - ((product.quantity * variant[0].price) * cartProduct.campaign.discount))
 
-            let totalPrice = ((orderItem.qty * orderItem.price) - ((orderItem.qty * orderItem.price) * cartProduct.campaign.discount)) + cartProduct?.serviceCharge + cartProduct?.shippingCharge;
-
-            let newCart = new Order({
-                user: req.user._id,
-                orderItem,
-                totalPrice,
-                discount: cartProduct.campaign.discount,
-                addedToCart: true,
-                discountPrice: ((orderItem.qty * orderItem.price) - ((orderItem.qty * orderItem.price) * cartProduct.campaign.discount)),
-                serviceCharge: cartProduct?.serviceCharge,
-                shippingCharge: cartProduct?.shippingCharge
-            });
-
-            let cart = await newCart.save();
+            let updatedOrder = await order.save();
 
             res.json({
                 code: 200,
                 isSuccess: true,
                 status: 'success',
                 data: {
-                    cart
+                    order: updatedOrder
                 }
-            });
+            })
+        } else {
+            res.status(404).json({
+                code: 404,
+                isSuccess: false,
+                status: 'failed',
+                message: 'Order is not found'
+            })
         }
-
-        if (req.method === 'PUT') {
-
-            let { orderId, product } = req.body;
-
-            let order = await Order.findOne({ _id: orderId, user: req.user._id });
-
-            let cartProduct = await Products.findById(product._id);
-
-            if (order && cartProduct) {
-
-                let variant = cartProduct?.variant?.filter(productVariant => productVariant._id.toString() === product.variantId);
-                order.orderItem.qty = product.quantity;
-                order.orderItem.price = variant[0].price;
-                order.orderItem.color = variant[0].color;
-                order.orderItem.size = variant[0].size;
-                order.orderItem.image = variant[0].image
-                order.totalPrice = ((product.quantity * variant[0].price) - ((product.quantity * variant[0].price) * cartProduct.campaign.discount)) + cartProduct?.serviceCharge + cartProduct?.shippingCharge;
-                order.shippingCharge = cartProduct.shippingCharge;
-                order.serviceCharge = cartProduct.serviceCharge;
-                order.discount = cartProduct.campaign.discount;
-                order.discountPrice = ((product.quantity * variant[0].price) - ((product.quantity * variant[0].price) * cartProduct.campaign.discount))
-
-                let updatedOrder = await order.save();
-
-                res.json({
-                    code: 200,
-                    isSuccess: true,
-                    status: 'success',
-                    data: {
-                        order: updatedOrder
-                    }
-                })
-            } else {
-                res.status(404).json({
-                    code: 404,
-                    isSuccess: false,
-                    status: 'failed',
-                    message: 'Order is not found'
-                })
-            }
-        }
-
-    } else {
-        res.status(400).json({
-            code: 400,
-            isSuccess: false,
-            status: 'failed',
-            message: `Only registered 'user' can access this route`
-        })
     }
-
-
 });
 
 /*
@@ -210,7 +199,7 @@ const cart = asyncHandler(async (req, res) => {
 */
 const deleteCart = asyncHandler(async (req, res) => {
 
-    if (req.user.type === 'user') {
+    if (req.user.role === 'user') {
 
         let deleteCart = await Order.findOneAndDelete({ user: req.user._id, _id: req.params.id });
 

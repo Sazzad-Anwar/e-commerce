@@ -98,38 +98,12 @@ const getStore = asyncHandler(async (req, res) => {
 ##### Access: admin, superAdmin
 */
 const updateStoreDetails = asyncHandler(async (req, res) => {
-    const {
-        storeName,
-        phone,
-        logo,
-        address,
-        country,
-        city,
-        zipCode,
-        seo,
-        website,
-        mapEmbedCode,
-        image,
-        _id,
-    } = req.body;
 
     const store = await Store.findById(_id);
 
     if (store) {
 
-        store.storeName = storeName ?? store.storeName;
-        store.phone = phone ?? store.phone;
-        store.logo = logo ?? store.logo;
-        store.address = address ?? store.address;
-        store.country = country ?? store.country;
-        store.city = city ?? store.city;
-        store.zipCode = zipCode ?? store.zipCode;
-        store.seo = seo ?? store.seo;
-        store.website = website ?? store.website;
-        store.mapEmbedCode = mapEmbedCode ?? store.mapEmbedCode;
-        store.image = image ?? store.image
-
-        let storeUpdated = await store.save();
+        let storeUpdated = await updateData(req.body, store);
 
         res.status(201).json({
             code: 201,

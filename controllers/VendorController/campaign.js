@@ -8,27 +8,6 @@ const asyncHandler = require('express-async-handler');
 ##### Access: superAdmin
 */
 const addCampaign = asyncHandler(async (req, res) => {
-    const {
-        title,
-        description,
-        status,
-        category,
-        product,
-        originalPrice,
-        discountPrice,
-        includingTax,
-        shipping,
-        startDate,
-        endDate,
-        deliveryWithin,
-        seo,
-        userLimit,
-        applyCancellationPolicy,
-        applyReturnPolicy,
-        applyReplacementPolicy,
-        banners,
-        sales
-    } = req.body;
 
     let campaignExists = await Campaign.findOne({ product });
 
@@ -40,27 +19,7 @@ const addCampaign = asyncHandler(async (req, res) => {
             message: `This campaign is already running`
         });
     } else {
-        let newCampaign = new Campaign({
-            title,
-            description,
-            status,
-            category,
-            product,
-            originalPrice,
-            discountPrice,
-            includingTax,
-            shipping,
-            startDate,
-            endDate,
-            deliveryWithin,
-            seo,
-            userLimit,
-            applyCancellationPolicy,
-            applyReturnPolicy,
-            applyReplacementPolicy,
-            banners,
-            sales
-        });
+        let newCampaign = new Campaign(req.body);
 
         let campaign = await newCampaign.save();
 
@@ -87,30 +46,6 @@ const updateCampaign = asyncHandler(async (req, res) => {
 
     if (req.query._id) {
 
-        const {
-            title,
-            description,
-            status,
-            category,
-            product,
-            originalPrice,
-            discountPrice,
-            includingTax,
-            shipping,
-            startDate,
-            endDate,
-            deliveryWithin,
-            seo,
-            userLimit,
-            applyCancellationPolicy,
-            applyReturnPolicy,
-            applyReplacementPolicy,
-            banners,
-            sales
-        } = req.body;
-
-        console.log(status)
-
         let campaignExists = await Campaign.findById(req.query._id);
 
         if (!campaignExists) {
@@ -122,27 +57,7 @@ const updateCampaign = asyncHandler(async (req, res) => {
             });
         } else {
 
-            campaignExists.title = title ?? campaignExists.title;
-            campaignExists.status = status ?? campaignExists.status;
-            campaignExists.description = description ?? campaignExists.description;
-            campaignExists.category = category ?? campaignExists.category;
-            campaignExists.product = product ?? campaignExists.product;
-            campaignExists.originalPrice = originalPrice ?? campaignExists.originalPrice;
-            campaignExists.discountPrice = discountPrice ?? campaignExists.discountPrice;
-            campaignExists.includingTax = includingTax ?? campaignExists.includingTax;
-            campaignExists.shipping = shipping ?? campaignExists.shipping;
-            campaignExists.startDate = startDate ?? campaignExists.startDate;
-            campaignExists.endDate = endDate ?? campaignExists.endDate;
-            campaignExists.deliveryWithin = deliveryWithin ?? campaignExists.deliveryWithin;
-            campaignExists.seo = seo ?? campaignExists.seo;
-            campaignExists.userLimit = userLimit ?? campaignExists.userLimit;
-            campaignExists.applyCancellationPolicy = applyCancellationPolicy ?? campaignExists.applyCancellationPolicy;
-            campaignExists.applyReturnPolicy = applyReturnPolicy ?? campaignExists.applyReturnPolicy;
-            campaignExists.applyReplacementPolicy = applyReplacementPolicy ?? campaignExists.applyReplacementPolicy;
-            campaignExists.banners = banners ?? campaignExists.banners;
-            campaignExists.sales = sales ?? campaignExists.sales;
-
-            let campaign = await campaignExists.save();
+            let campaign = await updateData(req.body, campaignExists)
 
             res.json({
                 code: 200,

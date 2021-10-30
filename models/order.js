@@ -44,7 +44,6 @@ const orderSchema = new mongoose.Schema({
         transactionId: { type: String },
         paymentMethod: {
             type: String,
-            enum: ['Cash-On-Delivery', 'Bkash', 'Nagad', 'Visa-Card', 'Master-Card']
         },
     },
     refund: {
