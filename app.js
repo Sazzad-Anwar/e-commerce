@@ -26,12 +26,12 @@ if (process.env.NODE_ENV !== 'production') {
     app.use(morgan('dev'));
 }
 
-app.use(compression());
 app.enable('trust proxy')
+app.use(compression());
 app.use(helmet());
+app.use(cookieParser());
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
-app.use(cookieParser());
 app.use(express.urlencoded({
     extended: true
 }));

@@ -69,7 +69,7 @@ const addStore = asyncHandler(async (req, res) => {
 */
 const getStore = asyncHandler(async (req, res) => {
 
-    const store = await Store.findOne({ vendor: req.user.role === 'admin' ? req.user._id : req.query.vendorId });
+    const store = await Store.find({ vendor: req.user.role === 'admin' ? req.user._id : req.query.vendorId });
 
     if (store) {
         res.json({
